@@ -1,40 +1,19 @@
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+HORSE
+===============    *(source URL: https://dit.hua.gr/index.php/el/a/projects?view=article&id=1426:horse&catid=34)*
 
+*   [](https://www.facebook.com/ditharokopio)
+*   [](https://www.youtube.com/channel/UCEHkYirpXF1nSLxDCrfDZ4A)
+*   [](https://www.linkedin.com/company/77699385)
+*   [](https://www.instagram.com/dithua)
 
+*   [](https://dit.hua.gr/index.php/el/a/projects)
+*   [](https://dit.hua.gr/index.php/en/research/projects)
 
+*   [+302109549400](tel:+302109549400)
+*   [itsec@hua.gr](mailto:itsec@hua.gr)
 
- 
+<table style="border-collapse: collapse; width: 100%;"><tbody><tr><td style="border: 1px solid #ddd; padding: 8px;"><img style="display:block; width:100%; height:auto;" src="/images/hua-200.png"></td><td style="border: 1px solid #ddd; padding: 8px;"><a href="http://www.horse-project.eu/">HORSE</a></td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Title</th><td style="border: 1px solid #ddd; padding: 8px;">Smart integrated Robotics system for SMEs controlled by Internet of Things based on dynamic manufacturing processes</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Funding Instrument</th><td style="border: 1px solid #ddd; padding: 8px;">H2020-FoF-2015</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Description</th><td style="border: 1px solid #ddd; padding: 8px;">HORSE (Smart integrated Robotics system for SMEs controlled by Internet of Things based on dynamic manufacturing processes) aims to bring a leap forward in the manufacturing industry proposing a new flexible model of smart factory involving collaboration of humans, robots, AGV's (Autonomous Guided Vehicles) and machinery to realize industrial tasks in an efficient manner. HORSE proposes to foster technology deployment towards SMEs by developing a methodological and technical framework for easy adaptation of robotic solutions and by setting up infrastructures and environments that will act as clustering points for selected application areas in manufacturing and for product life cycle management (production and/or maintenance and/or product end of life). The main strategy builds on existing technology and research results in robotics and smart factories and integrates them in a coherent framework.</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">HUA's role</th><td style="border: 1px solid #ddd; padding: 8px;"></td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Project Budget</th><td style="border: 1px solid #ddd; padding: 8px;">€8.000.000,00</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">HUA Budget</th><td style="border: 1px solid #ddd; padding: 8px;">€120.000.000,00</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Duration</th><td style="border: 1px solid #ddd; padding: 8px;">1/11/2015-30/4/2020</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Contact person</th><td style="border: 1px solid #ddd; padding: 8px;">Christos Michalakelis (<joomla-hidden-mail is-link="1" is-email="1" first="bWljaGFsYWs=" last="aHVhLmdy" text="bWljaGFsYWtAaHVhLmdy" base=""><a href="mailto:michalak@hua.gr" base="">michalak@hua.gr</a></joomla-hidden-mail>)</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Keywords</th><td style="border: 1px solid #ddd; padding: 8px;"></td></tr></tbody></table>
 
- 
- 
-  
-       
-           
- 
- 
+[FaLang translation system by Faboba](http://www.faboba.com/ "Faboba : Création de composantJoomla")
 
- +302109549400
- itsec@hua.gr         
- 
- 
- 
-
-     
- 
- 
-  
- 
-  
-  
-  
-    HORSE   TitleSmart integrated Robotics system for SMEs controlled by Internet of Things based on dynamic manufacturing processes   Funding InstrumentH2020-FoF-2015   DescriptionHORSE (Smart integrated Robotics system for SMEs controlled by Internet of Things based on dynamic manufacturing processes) aims to bring a leap forward in the manufacturing industry proposing a new flexible model of smart factory involving collaboration of humans, robots, AGV's (Autonomous Guided Vehicles) and machinery to realize industrial tasks in an efficient manner. HORSE proposes to foster technology deployment towards SMEs by developing a methodological and technical framework for easy adaptation of robotic solutions and by setting up infrastructures and environments that will act as clustering points for selected application areas in manufacturing and for product life cycle management (production and/or maintenance and/or product end of life). The main strategy builds on existing technology and research results in robotics and smart factories and integrates them in a coherent framework.   HUA's role   Project Budget€8.000.000,00   HUA Budget€120.000.000,00   Duration1/11/2015-30/4/2020   Contact personChristos Michalakelis (Αυτή η διεύθυνση Email προστατεύεται από τους αυτοματισμούς αποστολέων ανεπιθύμητων μηνυμάτων. Χρειάζεται να ενεργοποιήσετε τη JavaScript για να μπορέσετε να τη δείτε.)   Keywords     
-FaLang translation system by Faboba
+[](https://dit.hua.gr/index.php/el/a/projects?view=article&id=1426:horse&catid=34#)

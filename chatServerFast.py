@@ -293,7 +293,7 @@ thread.start()
 if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    directory_path = '/home/it2021087/chatBot/scraped_pages_el'
+    directory_path = '/home/it2021087/chatBot/Hua/scraped_pages_el'
 
     loader = DirectoryLoader(directory_path, glob="*.md", loader_cls=TextLoader)
     documents = loader.load()

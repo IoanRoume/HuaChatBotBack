@@ -1,40 +1,19 @@
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+EMBIOT
+===============    *(source URL: https://dit.hua.gr/index.php/el/a/projects?view=article&id=1425:embiot&catid=34)*
 
+*   [](https://www.facebook.com/ditharokopio)
+*   [](https://www.youtube.com/channel/UCEHkYirpXF1nSLxDCrfDZ4A)
+*   [](https://www.linkedin.com/company/77699385)
+*   [](https://www.instagram.com/dithua)
 
+*   [](https://dit.hua.gr/index.php/el/a/projects)
+*   [](https://dit.hua.gr/index.php/en/research/projects)
 
+*   [+302109549400](tel:+302109549400)
+*   [itsec@hua.gr](mailto:itsec@hua.gr)
 
- 
+<table style="border-collapse: collapse; width: 100%;"><tbody><tr><td style="border: 1px solid #ddd; padding: 8px;"><img style="display:block; width:100%; height:auto;" src="/images/hua-200.png"></td><td style="border: 1px solid #ddd; padding: 8px;"><a href="/">EMBIoT</a></td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Title</th><td style="border: 1px solid #ddd; padding: 8px;">Embedded multi-core systems for multi-critical applications in the Internet of Things Era</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Funding Instrument</th><td style="border: 1px solid #ddd; padding: 8px;">Qatar National Research Fund</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Description</th><td style="border: 1px solid #ddd; padding: 8px;">The embedded systems domain is continuously evolving in terms of innovations proposed. Different kinds of systems are connected to each other and systems of systems are formed. Boundaries of application domains are alleviated and ad-hoc connections and interoperability play an increasing role. In the present situation formerly closed systems are forced to be opened up. Traditional single-core processors used as computing resources are running out of business. Multi-core and Many-core processors become available whose exploitation for critical and real-time applications is presently happening unsatisfactorily slow, inefficient and expensive. Summarizing, this means their use in certified or qualified environments is challenging. The objective of the EMBIoT project is to foster this change of embedded systems through following an innovative and sustainable service-oriented architecture approach for mixed criticality applications in multi-modal real-time environments. The EMBIoT project will provide the paradigm shift to a new and sustainable system architecture, which will be appropriate for accommodating open, multi-criticality and dynamically changing systems.</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">HUA's role</th><td style="border: 1px solid #ddd; padding: 8px;"></td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Project Budget</th><td style="border: 1px solid #ddd; padding: 8px;">677,000.00 USD</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">HUA Budget</th><td style="border: 1px solid #ddd; padding: 8px;">182.640.00 USD</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Duration</th><td style="border: 1px solid #ddd; padding: 8px;">01/11/2016-31/10/2019</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Contact person</th><td style="border: 1px solid #ddd; padding: 8px;">George Dimitrakopoulos (<joomla-hidden-mail is-link="1" is-email="1" first="Z2RpbWl0cmE=" last="aHVhLmdy" text="Z2RpbWl0cmFAaHVhLmdy" base=""><a href="mailto:gdimitra@hua.gr" base="">gdimitra@hua.gr</a></joomla-hidden-mail>)</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Keywords</th><td style="border: 1px solid #ddd; padding: 8px;">mixed-criticality systems, system modelling, internet of things, healthcare</td></tr></tbody></table>
 
- 
- 
-  
-       
-           
- 
- 
+[FaLang translation system by Faboba](http://www.faboba.com/ "Faboba : Création de composantJoomla")
 
- +302109549400
- itsec@hua.gr         
- 
- 
- 
-
-     
- 
- 
-  
- 
-  
-  
-  
-    EMBIoT   TitleEmbedded multi-core systems for multi-critical applications in the Internet of Things Era   Funding InstrumentQatar National Research Fund   DescriptionThe embedded systems domain is continuously evolving in terms of innovations proposed. Different kinds of systems are connected to each other and systems of systems are formed. Boundaries of application domains are alleviated and ad-hoc connections and interoperability play an increasing role. In the present situation formerly closed systems are forced to be opened up. Traditional single-core processors used as computing resources are running out of business. Multi-core and Many-core processors become available whose exploitation for critical and real-time applications is presently happening unsatisfactorily slow, inefficient and expensive. Summarizing, this means their use in certified or qualified environments is challenging. The objective of the EMBIoT project is to foster this change of embedded systems through following an innovative and sustainable service-oriented architecture approach for mixed criticality applications in multi-modal real-time environments. The EMBIoT project will provide the paradigm shift to a new and sustainable system architecture, which will be appropriate for accommodating open, multi-criticality and dynamically changing systems.   HUA's role   Project Budget677,000.00 USD   HUA Budget182.640.00 USD   Duration01/11/2016-31/10/2019   Contact personGeorge Dimitrakopoulos (Αυτή η διεύθυνση Email προστατεύεται από τους αυτοματισμούς αποστολέων ανεπιθύμητων μηνυμάτων. Χρειάζεται να ενεργοποιήσετε τη JavaScript για να μπορέσετε να τη δείτε.)   Keywordsmixed-criticality systems, system modelling, internet of things, healthcare     
-FaLang translation system by Faboba
+[](https://dit.hua.gr/index.php/el/a/projects?view=article&id=1425:embiot&catid=34#)

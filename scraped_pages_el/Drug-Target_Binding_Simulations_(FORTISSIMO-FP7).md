@@ -1,19 +1,20 @@
 Drug-Target Binding Simulations (FORTISSIMO-FP7)
-===============  
+===============  *(source URL: https://dit.hua.gr/index.php/el/a/projects?view=article&id=811:drug-target-binding-simulations-fortissimo-fp7&catid=34)*
+                              
 
 *   [](https://www.facebook.com/ditharokopio)
 *   [](https://www.youtube.com/channel/UCEHkYirpXF1nSLxDCrfDZ4A)
 *   [](https://www.linkedin.com/company/77699385)
 *   [](https://www.instagram.com/dithua)
 
-*   [](https://dit.hua.gr/index.php/el/a/projects?view=article&id=1422:master&catid=34:-)
-*   [](https://dit.hua.gr/index.php/en/research/projects?view=article&id=1422:master&catid=34:projects)
+*   [](https://dit.hua.gr/index.php/el/a/projects)
+*   [](https://dit.hua.gr/index.php/en/research/projects)
 
 *   [+302109549400](tel:+302109549400)
 *   [itsec@hua.gr](mailto:itsec@hua.gr)
 
 Drug-Target Binding Simulations (FORTISSIMO-FP7)
-================================================
+================================================  *(source URL: https://dit.hua.gr/index.php/el/a/projects?view=article&id=811:drug-target-binding-simulations-fortissimo-fp7&catid=34)*
 
 _Διάρκεια: 18 μήνες από Οκτώβριο 2014_  
 _Προϋπολογισμός: 247.560 ευρώ (Προϋπολογισμός Χαροκοπείου Πανεπιστημίου – ΤΠΤ: 78.240€ )_  

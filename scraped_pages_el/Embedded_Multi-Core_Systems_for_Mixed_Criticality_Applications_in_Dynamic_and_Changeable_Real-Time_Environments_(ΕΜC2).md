@@ -1,19 +1,19 @@
 Embedded Multi-Core Systems for Mixed Criticality Applications in Dynamic and Changeable Real-Time Environments (ΕΜC2)
-===============  
+===============    *(source URL: https://dit.hua.gr/index.php/el/a/projects?view=article&id=743:embedded-multi-core-systems-for-mixed-criticality-applications-in-dynamic-and-changeable-real-time-environments-c2&catid=34)*
 
 *   [](https://www.facebook.com/ditharokopio)
 *   [](https://www.youtube.com/channel/UCEHkYirpXF1nSLxDCrfDZ4A)
 *   [](https://www.linkedin.com/company/77699385)
 *   [](https://www.instagram.com/dithua)
 
-*   [](https://dit.hua.gr/index.php/el/a/projects?view=article&id=1422:master&catid=34:-)
-*   [](https://dit.hua.gr/index.php/en/research/projects?view=article&id=1422:master&catid=34:projects)
+*   [](https://dit.hua.gr/index.php/el/a/projects)
+*   [](https://dit.hua.gr/index.php/en/research/projects)
 
 *   [+302109549400](tel:+302109549400)
 *   [itsec@hua.gr](mailto:itsec@hua.gr)
 
 Embedded Multi-Core Systems for Mixed Criticality Applications in Dynamic and Changeable Real-Time Environments (ΕΜC2)
-======================================================================================================================
+======================================================================================================================  *(source URL: https://dit.hua.gr/index.php/el/a/projects?view=article&id=743:embedded-multi-core-systems-for-mixed-criticality-applications-in-dynamic-and-changeable-real-time-environments-c2&catid=34)*
 
 _Διάρκεια: 01/04/2014 – 31/03/2017_  
 _Προϋπολογισμός: € 98,421,659.00 (Προϋπολογισμός Χαροκόπειου Πανεπιστημίου – ΤΠΤ: € 169.672,00)_  

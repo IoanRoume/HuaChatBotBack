@@ -1,70 +1,19 @@
- 
- 
-    
-   
-   
- 
- 
- 
- 
- 
- 
- 
- 
- 
+Cloud for HologrAphy and Cross RealITY (CHARITY)
+===============    *(source URL: https://dit.hua.gr/index.php/el/a/projects?view=article&id=1668:cloud-for-holography-and-cross-reality-charity&catid=34:-)*
 
+*   [](https://www.facebook.com/ditharokopio)
+*   [](https://www.youtube.com/channel/UCEHkYirpXF1nSLxDCrfDZ4A)
+*   [](https://www.linkedin.com/company/77699385)
+*   [](https://www.instagram.com/dithua)
 
+*   [](https://dit.hua.gr/index.php/el/a/projects)
+*   [](https://dit.hua.gr/index.php/en/research/projects)
 
+*   [+302109549400](tel:+302109549400)
+*   [itsec@hua.gr](mailto:itsec@hua.gr)
 
- 
+<table style="border: none; border-collapse: collapse;"><colgroup><col><col></colgroup><tbody><tr style="height: 21pt;"><td colspan="2" style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt; text-align: center;"><a href="https://www.charity-project.eu/en" target="_blank" rel="noopener noreferrer"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;"><span style="border: none; display: inline-block; overflow: hidden; width: 607px; height: 166px;"><img src="https://lh5.googleusercontent.com/uZ7DZeYPLJUB-Sppn2ZilvSh_SfqYFH95jr09FQXayOrOdKM56HZC5NkJWybaDF5fT3tgufIdl3z4h1LhjCqqGn15MPZsGq9LvCPglP1M7gAoHoYs1bylz2AlLzwBLjrgsJtlwE" alt="" width="607" height="166" style="margin-top: 0px; display: block; margin-left: auto; margin-right: auto;"></span></span></a></p></td></tr><tr style="height: 0pt;"><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;"><span style="border: none; display: inline-block; overflow: hidden; width: 81px; height: 79px;"><img src="https://lh3.googleusercontent.com/bTgsM67NVacqiZ8GkCtBxRVGGTnKHB7IvydN0OhH8NnAKxFjZDatejVvUwpKnJjnhNRxCOwa7IFy3-GgVHFhot9cKmnzV4ASFVFMo87S-HzmH6Tc4qUSCqIh21_FJ7EU8DPjZMo" alt="" width="81" height="79" style="margin-left: 0px; margin-top: 0px;"></span></span></p></td><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">CHARITY</span></p></td></tr><tr style="height: 0pt;"><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">Title</span></p></td><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">Cloud for HologrAphy and Cross RealITY</span></p></td></tr><tr style="height: 0pt;"><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">Funding Instrument</span></p></td><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">H2020-ICT-2018-20 /</span><span style="font-size: 11pt; font-family: Arial; background-color: transparent; font-weight: bold; vertical-align: baseline; white-space: pre-wrap;"> H2020-ICT-2020-2</span></p></td></tr><tr style="height: 0pt;"><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">Description</span></p></td><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; text-align: justify; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">The impact of technology in the world's panorama is at an all-time high. Advanced media applications enabling immersive communication are becoming ubiquitous in our lives, and there is a global trend to adopt virtual solutions to support day-to-day business operations, social events, and general lifestyle. A subset of these innovative media applications includes Virtual Reality, Augmented Reality, and Holography, but they do not come without their share of challenges and requirements. To enable a satisfactory user experience, the requirements for the computing platform and its underlying network can be considered extreme and far from what can be attainable today. Hence, we propose a Cloud for Holography and Cross Reality (CHARITY), which is a complete framework that attempts to overcome the challenges and meet the requirements of such applications. CHARITY leverages an innovative cloud architecture that exploits edge solutions, a computing and network continuum autonomous orchestration, application-driven interfacing, mechanisms for smart, adaptive and efficient resource management, strong community involvement, and overreaching compatibility with all infrastructure vendors. This integrated framework will be put into test in a broad diversity of use cases targeted at advanced media applications, such as holographic events, virtual reality training, and mixed reality entertainment. CHARITY expects to deliver a working prototype, validated by the most demanding applications, capable of being demonstrated at dissemination events and exploited by a large community of users and companies outside the consortium, paving the way to the mass adoption of more advanced media applications in the market.&#160;</span></p></td></tr><tr style="height: 0pt;"><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">HUA's role</span><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;"><span style="white-space: pre;"></span></span></p></td><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; text-align: justify; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">HUA will bring expertise on adaptive behaviors in hybrid edge/cloud infrastructures at the network and computing planes.</span></p></td></tr><tr style="height: 0pt;"><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">Project Budget</span></p></td><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">€ 4.996.175,00</span></p></td></tr><tr style="height: 0pt;"><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">HUA Budget</span></p></td><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">€ 265.000,00</span></p></td></tr><tr style="height: 0pt;"><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">Duration</span></p></td><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">01/01/2021 - 31/12/2023</span></p></td></tr><tr style="height: 0pt;"><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">Contact person</span></p></td><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">Konstantinos Tserpes (<joomla-hidden-mail is-link="1" is-email="1" first="dHNlcnBlcw==" last="aHVhLmdy" text="dHNlcnBlc0BodWEuZ3I=" base=""><a href="mailto:tserpes@hua.gr" base="">tserpes@hua.gr</a></joomla-hidden-mail>) &amp; Antonios Makris (<joomla-hidden-mail is-link="1" is-email="1" first="YW1ha3Jpcw==" last="aHVhLmdy" text="YW1ha3Jpc0BodWEuZ3I=" base=""><a href="mailto:amakris@hua.gr" base="">amakris@hua.gr</a></joomla-hidden-mail>)</span></p></td></tr><tr style="height: 0pt;"><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">Keywords</span></p></td><td style="vertical-align: top; padding: 5pt; overflow: hidden; border: 1pt solid #000000;"><p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">Cloud computing, Cloud Services, Cloud Infrastructures, Network technologies /Internetworking</span></p></td></tr></tbody></table>
 
- 
- 
-  
-       
-           
- 
- 
+[FaLang translation system by Faboba](http://www.faboba.com/ "Faboba : Création de composantJoomla")
 
- +302109549400
- itsec@hua.gr         
- 
- 
- 
-
-     
- 
- 
-  
- 
-  
-  
-  
- 
- 
-
-
-    
-     
-   
-CHARITY     
-Title   
-Cloud for HologrAphy and Cross RealITY     
-Funding Instrument   
-H2020-ICT-2018-20 / H2020-ICT-2020-2     
-Description   
-The impact of technology in the world's panorama is at an all-time high. Advanced media applications enabling immersive communication are becoming ubiquitous in our lives, and there is a global trend to adopt virtual solutions to support day-to-day business operations, social events, and general lifestyle. A subset of these innovative media applications includes Virtual Reality, Augmented Reality, and Holography, but they do not come without their share of challenges and requirements. To enable a satisfactory user experience, the requirements for the computing platform and its underlying network can be considered extreme and far from what can be attainable today. Hence, we propose a Cloud for Holography and Cross Reality (CHARITY), which is a complete framework that attempts to overcome the challenges and meet the requirements of such applications. CHARITY leverages an innovative cloud architecture that exploits edge solutions, a computing and network continuum autonomous orchestration, application-driven interfacing, mechanisms for smart, adaptive and efficient resource management, strong community involvement, and overreaching compatibility with all infrastructure vendors. This integrated framework will be put into test in a broad diversity of use cases targeted at advanced media applications, such as holographic events, virtual reality training, and mixed reality entertainment. CHARITY expects to deliver a working prototype, validated by the most demanding applications, capable of being demonstrated at dissemination events and exploited by a large community of users and companies outside the consortium, paving the way to the mass adoption of more advanced media applications in the market.      
-HUA's role    
-HUA will bring expertise on adaptive behaviors in hybrid edge/cloud infrastructures at the network and computing planes.     
-Project Budget   
-€ 4.996.175,00     
-HUA Budget   
-€ 265.000,00     
-Duration   
-01/01/2021 - 31/12/2023     
-Contact person   
-Konstantinos Tserpes (tserpes@hua.gr) & Antonios Makris (amakris@hua.gr)     
-Keywords   
-Cloud computing, Cloud Services, Cloud Infrastructures, Network technologies /Internetworking      
-   
-FaLang translation system by Faboba
+[](https://dit.hua.gr/index.php/el/a/projects?view=article&id=1668:cloud-for-holography-and-cross-reality-charity&catid=34:-#)

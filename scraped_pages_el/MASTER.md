@@ -1,40 +1,19 @@
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+MASTER
+===============    *(source URL: https://dit.hua.gr/index.php/el/a/projects?view=article&id=1422:master&catid=34)*
 
+*   [](https://www.facebook.com/ditharokopio)
+*   [](https://www.youtube.com/channel/UCEHkYirpXF1nSLxDCrfDZ4A)
+*   [](https://www.linkedin.com/company/77699385)
+*   [](https://www.instagram.com/dithua)
 
+*   [](https://dit.hua.gr/index.php/el/a/projects)
+*   [](https://dit.hua.gr/index.php/en/research/projects)
 
+*   [+302109549400](tel:+302109549400)
+*   [itsec@hua.gr](mailto:itsec@hua.gr)
 
- 
+<table style="border-collapse: collapse; width: 100%;"><tbody><tr><td style="border: 1px solid #ddd; padding: 8px;"><img style="display:block; width:100%; height:auto;" src="http://www.master-project-h2020.eu/wp-content/uploads/2018/02/cropped-Master-logo-1.png"></td><td style="border: 1px solid #ddd; padding: 8px;"><a href="http://www.master-project-h2020.eu">MASTER</a></td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Title</th><td style="border: 1px solid #ddd; padding: 8px;">Multiple Aspects Trajectory Management and Analysis</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Funding Instrument</th><td style="border: 1px solid #ddd; padding: 8px;">H2020-MSCA-RISE-2017</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Description</th><td style="border: 1px solid #ddd; padding: 8px;">An ever-increasing number of diverse, real-life applications, ranging from mobile phone calls to social media and land, sea, and air surveillance systems, produce massive amounts of spatio-temporal data representing trajectories of moving objects. Trajectories, commonly represented by sequences of timestamps and position coordinates, thanks to the high availability of contextual and semantic-rich data can be enriched and are evolving to more comprehensive and semantically significant objects. In the MASTER project we envision holistic trajectories, meaning trajectories characterized by the fact that the spatio-temporal and semantic aspects are intimately correlated and should be considered as a whole. However current state of art does not provide management and analysis methods “ready for use” for these multiple aspects trajectories. The overarching objective of this project is to form an international and inter-sectoral network of partners working on a joint research programme by developing methods to build, manage and analyse multiple aspects trajectories. These methods are driven by application scenarios from three different domains: tourism, sea monitoring and public transportation.</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">HUA's role</th><td style="border: 1px solid #ddd; padding: 8px;">HUA contributes to the anomaly detection and maritime situational awareness tasks using AIS data, analyzing vessels trajectories. Furtermore it deals with the problem of identifying vessels from interactions among other vessels, since migrant vessels are unlikely to report their positions. HUA develops spatiotemporal relationships between vessels and geographical areas of interest with the aim of detecting SAR actions on migrants.</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Project Budget</th><td style="border: 1px solid #ddd; padding: 8px;">€504.000,00</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">HUA Budget</th><td style="border: 1px solid #ddd; padding: 8px;">€99.000,00</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Duration</th><td style="border: 1px solid #ddd; padding: 8px;">01/03/2018-28/02/2022</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Contact person</th><td style="border: 1px solid #ddd; padding: 8px;">Konstantinos Tserpes (<joomla-hidden-mail is-link="1" is-email="1" first="dHNlcnBlcw==" last="aHVhLmdy" text="dHNlcnBlc0BodWEuZ3I=" base=""><a href="mailto:tserpes@hua.gr" base="">tserpes@hua.gr</a></joomla-hidden-mail>), Iraklis Varlamis (<joomla-hidden-mail is-link="1" is-email="1" first="dmFybGFtaXM=" last="aHVhLmdy" text="dmFybGFtaXNAaHVhLmdy" base=""><a href="mailto:varlamis@hua.gr" base="">varlamis@hua.gr</a></joomla-hidden-mail>)</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Keywords</th><td style="border: 1px solid #ddd; padding: 8px;">trajectory analysis, anomaly detection, infrastructures for trajectories, big data</td></tr></tbody></table>
 
- 
- 
-  
-       
-           
- 
- 
+[FaLang translation system by Faboba](http://www.faboba.com/ "Faboba : Création de composantJoomla")
 
- +302109549400
- itsec@hua.gr         
- 
- 
- 
-
-     
- 
- 
-  
- 
-  
-  
-  
-    MASTER   TitleMultiple Aspects Trajectory Management and Analysis   Funding InstrumentH2020-MSCA-RISE-2017   DescriptionAn ever-increasing number of diverse, real-life applications, ranging from mobile phone calls to social media and land, sea, and air surveillance systems, produce massive amounts of spatio-temporal data representing trajectories of moving objects. Trajectories, commonly represented by sequences of timestamps and position coordinates, thanks to the high availability of contextual and semantic-rich data can be enriched and are evolving to more comprehensive and semantically significant objects. In the MASTER project we envision holistic trajectories, meaning trajectories characterized by the fact that the spatio-temporal and semantic aspects are intimately correlated and should be considered as a whole. However current state of art does not provide management and analysis methods “ready for use” for these multiple aspects trajectories. The overarching objective of this project is to form an international and inter-sectoral network of partners working on a joint research programme by developing methods to build, manage and analyse multiple aspects trajectories. These methods are driven by application scenarios from three different domains: tourism, sea monitoring and public transportation.   HUA's roleHUA contributes to the anomaly detection and maritime situational awareness tasks using AIS data, analyzing vessels trajectories. Furtermore it deals with the problem of identifying vessels from interactions among other vessels, since migrant vessels are unlikely to report their positions. HUA develops spatiotemporal relationships between vessels and geographical areas of interest with the aim of detecting SAR actions on migrants.   Project Budget€504.000,00   HUA Budget€99.000,00   Duration01/03/2018-28/02/2022   Contact personKonstantinos Tserpes (Αυτή η διεύθυνση Email προστατεύεται από τους αυτοματισμούς αποστολέων ανεπιθύμητων μηνυμάτων. Χρειάζεται να ενεργοποιήσετε τη JavaScript για να μπορέσετε να τη δείτε.), Iraklis Varlamis (Αυτή η διεύθυνση Email προστατεύεται από τους αυτοματισμούς αποστολέων ανεπιθύμητων μηνυμάτων. Χρειάζεται να ενεργοποιήσετε τη JavaScript για να μπορέσετε να τη δείτε.)   Keywordstrajectory analysis, anomaly detection, infrastructures for trajectories, big data     
-FaLang translation system by Faboba
+[](https://dit.hua.gr/index.php/el/a/projects?view=article&id=1422:master&catid=34#)

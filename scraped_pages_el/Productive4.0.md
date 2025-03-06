@@ -1,40 +1,19 @@
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+Productive4.0
+===============    *(source URL: https://dit.hua.gr/index.php/el/a/projects?view=article&id=1424:productive4-0&catid=34)*
 
+*   [](https://www.facebook.com/ditharokopio)
+*   [](https://www.youtube.com/channel/UCEHkYirpXF1nSLxDCrfDZ4A)
+*   [](https://www.linkedin.com/company/77699385)
+*   [](https://www.instagram.com/dithua)
 
+*   [](https://dit.hua.gr/index.php/el/a/projects)
+*   [](https://dit.hua.gr/index.php/en/research/projects)
 
+*   [+302109549400](tel:+302109549400)
+*   [itsec@hua.gr](mailto:itsec@hua.gr)
 
- 
+<table style="border-collapse: collapse; width: 100%;"><tbody><tr><td style="border: 1px solid #ddd; padding: 8px;"><img src="/images/Productive40_Logo_Blue_300ppi.jpg" alt="Productive40" style="display: block; width: 100%; height: auto;"></td><td style="border: 1px solid #ddd; padding: 8px;"><a href="https://productive40.eu">Productive 4.0</a></td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Title</th><td style="border: 1px solid #ddd; padding: 8px;">&#160;</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Funding Instrument</th><td style="border: 1px solid #ddd; padding: 8px;">ECSEL Joint Undertaking</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Description</th><td style="border: 1px solid #ddd; padding: 8px;">Productive4.0 is an ambitious holistic innovation project, meant to open the doors to the potentials of Digital Industry and to maintain a leadership position of the industries in Europe. All partners involved will work on creating the capability to efficiently design and integrate hardware and software of Internet of Things (IoT) devices. Linking the real with the digital world takes more than just adding software to the hardware.</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">HUA's role</th><td style="border: 1px solid #ddd; padding: 8px;">&#160;</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Project Budget</th><td style="border: 1px solid #ddd; padding: 8px;">€106.000.000,00</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">HUA Budget</th><td style="border: 1px solid #ddd; padding: 8px;">&#160;</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Duration</th><td style="border: 1px solid #ddd; padding: 8px;">05/2017-04/2020</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Contact person</th><td style="border: 1px solid #ddd; padding: 8px;">Dimosthenis Anagnostopoulos (<joomla-hidden-mail is-link="1" is-email="1" first="ZGltb3N0aGU=" last="aHVhLmdy" text="ZGltb3N0aGVAaHVhLmdy" base=""><a href="mailto:dimosthe@hua.gr" base="">dimosthe@hua.gr</a></joomla-hidden-mail>)</td></tr><tr><th style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;">Keywords</th><td style="border: 1px solid #ddd; padding: 8px;">&#160;</td></tr></tbody></table>
 
- 
- 
-  
-       
-           
- 
- 
+[FaLang translation system by Faboba](http://www.faboba.com/ "Faboba : Création de composantJoomla")
 
- +302109549400
- itsec@hua.gr         
- 
- 
- 
-
-     
- 
- 
-  
- 
-  
-  
-  
-     Productive 4.0  Title    Funding Instrument ECSEL Joint Undertaking  Description Productive4.0 is an ambitious holistic innovation project, meant to open the doors to the potentials of Digital Industry and to maintain a leadership position of the industries in Europe. All partners involved will work on creating the capability to efficiently design and integrate hardware and software of Internet of Things (IoT) devices. Linking the real with the digital world takes more than just adding software to the hardware.  HUA's role    Project Budget €106.000.000,00  HUA Budget    Duration 05/2017-04/2020  Contact person Dimosthenis Anagnostopoulos (Αυτή η διεύθυνση Email προστατεύεται από τους αυτοματισμούς αποστολέων ανεπιθύμητων μηνυμάτων. Χρειάζεται να ενεργοποιήσετε τη JavaScript για να μπορέσετε να τη δείτε.)  Keywords        
-FaLang translation system by Faboba
+[](https://dit.hua.gr/index.php/el/a/projects?view=article&id=1424:productive4-0&catid=34#)

@@ -1,5 +1,5 @@
 Google Cloud Platform Education Grant
-===============  
+===============    *(source URL: https://dit.hua.gr/index.php/el/?view=article&id=1156:google-cloud-platform-education-grant&catid=55:research)*
 
 *   [](https://www.facebook.com/ditharokopio)
 *   [](https://www.youtube.com/channel/UCEHkYirpXF1nSLxDCrfDZ4A)

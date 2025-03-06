@@ -1,5 +1,5 @@
 Πρόγραμμα Erasmus Mundus
-===============  
+===============    *(source URL: https://dit.hua.gr/index.php/el/erasmus-mundus-program)*
 
 *   [](https://www.facebook.com/ditharokopio)
 *   [](https://www.youtube.com/channel/UCEHkYirpXF1nSLxDCrfDZ4A)
@@ -37,7 +37,7 @@
 [https://sites.google.com/site/emthelxinoe/thematic\_fields](https://sites.google.com/site/emthelxinoe/thematic_fields)
 
 _Υπεύθυνος Επικοινωνίας_  
-**Γιώργος Δημητρακόπουλος**, Λέκτορας  
+**Γιώργος Δημητρακόπουλος**, Λέκτορας    *(source URL: https://dit.hua.gr/index.php/el/erasmus-mundus-program)*
 Ομήρου 9, Αθήνα  177 78, Ελλάδα  
 Τηλ:    ++30-210-9549426  
 Fax:    ++30-210-9549401  
