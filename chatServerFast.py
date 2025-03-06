@@ -69,21 +69,12 @@ class MarkdownTitleTextSplitter(TextSplitter):
 
         return sections
 
-def is_english(text):
-    return all(ord(c) < 128 for c in text)
 
 
 def rerank(query, documents, batch_size=16):
     pairs = [(query, doc) for doc in documents]
     ranked_indexes = []
-    if is_english(query):
-        print("It is english", file=sys.stderr)
-        for i in range(0, len(pairs), batch_size):
-            batch_pairs = pairs[i:i + batch_size]
-            inputs = tokenizer(batch_pairs, padding=True, truncation=True, return_tensors="pt").to(device)
-    else:
-        print("It is Greek", file=sys.stderr)
-        inputs = tokenizer(pairs, padding=True, truncation=True, return_tensors="pt").to(device)
+    inputs = tokenizer(pairs, padding=True, truncation=True, return_tensors="pt").to(device)
 
     torch.cuda.empty_cache()
 
