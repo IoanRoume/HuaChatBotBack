@@ -28,7 +28,7 @@ class MarkdownTitleTextSplitter(TextSplitter):
         skipLine = False
 
         for line in text.splitlines():
-            # Check if the line starts with a Markdown header (e.g., #, ##, ###)
+            #Check if the line starts with a Markdown header (e.g., #, ##, ###)
             if line == "":
               continue
             elif line.startswith("#"):
@@ -37,7 +37,7 @@ class MarkdownTitleTextSplitter(TextSplitter):
                     sections.append("\n".join(current_section))
                 current_section = [line]  # Start a new section
                 skipLine = True
-            # Check if the line starts with '**' (indicating bold text or a special marker)
+            #Check if the line starts with '**' (indicating bold text or a special marker)
             elif line.startswith("**"):
                 current_section.append(previous_line)
                 if current_section:  # Save the current section if it exists
@@ -50,7 +50,7 @@ class MarkdownTitleTextSplitter(TextSplitter):
                     sections.append("\n".join(current_section))
                 current_section = [line]  # Start a new section
                 skipLine = True
-            # Check if the line is a separator (a line with only '=' characters)
+            #Check if the line is a separator (a line with only '=' characters)
             elif line.startswith("==") or line.startswith("--"):
 
                 if current_section:
@@ -63,21 +63,34 @@ class MarkdownTitleTextSplitter(TextSplitter):
                 skipLine = False
 
             previous_line = line
-        # Add the final section if there's remaining content
+        #Add the final section if there's remaining content
         if current_section:
             sections.append("\n".join(current_section))
 
         return sections
 
+def is_english(text):
+    return all(ord(c) < 128 for c in text)
 
-def rerank(query, documents):
+
+def rerank(query, documents, batch_size=16):
     pairs = [(query, doc) for doc in documents]
-    inputs = tokenizer(pairs, padding=True, truncation=True, return_tensors="pt").to(device)
+    ranked_indexes = []
+    if is_english(query):
+        print("It is english", file=sys.stderr)
+        for i in range(0, len(pairs), batch_size):
+            batch_pairs = pairs[i:i + batch_size]
+            inputs = tokenizer(batch_pairs, padding=True, truncation=True, return_tensors="pt").to(device)
+    else:
+        print("It is Greek", file=sys.stderr)
+        inputs = tokenizer(pairs, padding=True, truncation=True, return_tensors="pt").to(device)
+
+    torch.cuda.empty_cache()
 
     with torch.no_grad():
-        scores = reranker_model(**inputs).logits.view(-1).cpu().tolist()  # Get scores
+        scores = reranker_model(**inputs).logits.view(-1).cpu().tolist()  #Get scores
 
-    # Sort documents by score (higher is better) and store indexes
+    #Sort documents by score and store indexes
     ranked_indexes = [i for i, _ in sorted(enumerate(scores), key=lambda x: x[1], reverse=True)]
     return ranked_indexes
 
@@ -327,6 +340,7 @@ if __name__ == "__main__":
     Απάντησε στην παρακάτω ερώτηση με σαφήνεια και ακρίβεια χρησιμοποιώντας τα παρεχόμενα αποσπάσματα από τη βάση γνώσεων. 
     Αν δεν γνωρίζεις την απάντηση, πες ότι δεν είσαι σίγουρος αντί να δώσεις λανθασμένη πληροφορία.
     Αν η ερώτηση είναι εκτός θέματος, απαντάς ευγενικά ότι δεν διαθέτεις τις σχετικές πληροφορίες.
+    Αν η ερώτηση είναι στα Αγγλικά τότε πρέπει και εσύ να απαντήσεις στα Αγγλικά, αν είναι στα Ελληνικά τότε πρέπει να απαντήσεις στα Ελληνικά
 
     Ερώτηση: {question}
 
