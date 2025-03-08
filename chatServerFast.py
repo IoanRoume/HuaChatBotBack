@@ -242,7 +242,7 @@ async def session_end(feedback: str = Query(None)):
                     f.write(f"**Answer: ** {feedback_entry.get('answer', 'Unknown')}\n")
                     f.write(f"**Feedback: ** {'GOOD' if feedback_entry.get('feedback') == 'up' else 'BAD'}\n")
                     f.write(f"**Comment: ** {feedback_entry.get('comment', 'No comment')}\n")
-                    f.write(f"Time: ** {datetime.now()}\n\n")
+                    f.write(f"**Time: ** {datetime.now()}\n\n")
         except json.JSONDecodeError:
             return {"message": "Invalid feedback format"}, 400
     return {"message": "Session data received"}
@@ -272,7 +272,7 @@ async def save_feedback(feedback: FeedbackRequest):
             f.write(f"**Answer: ** {feedback_entry['answer']}\n")
             f.write(f"**Feedback: ** {feedback_entry['feedback']}\n")
             f.write(f"**Comment: ** {feedback_entry['comment']}\n")
-            f.write(f"Time: ** {datetime.now()}\n\n")
+            f.write(f"**Time: ** {datetime.now()}\n\n")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error saving feedback: {str(e)}")
     return {"message": "Feedback saved!", "id": user_id}
@@ -331,7 +331,8 @@ if __name__ == "__main__":
     Απάντησε στην παρακάτω ερώτηση με σαφήνεια και ακρίβεια χρησιμοποιώντας τα παρεχόμενα αποσπάσματα από τη βάση γνώσεων. 
     Αν δεν γνωρίζεις την απάντηση, πες ότι δεν είσαι σίγουρος αντί να δώσεις λανθασμένη πληροφορία.
     Αν η ερώτηση είναι εκτός θέματος, απαντάς ευγενικά ότι δεν διαθέτεις τις σχετικές πληροφορίες.
-    Αν η ερώτηση είναι στα Αγγλικά τότε πρέπει και εσύ να απαντήσεις στα Αγγλικά, αν είναι στα Ελληνικά τότε πρέπει να απαντήσεις στα Ελληνικά
+    Αν η ερώτηση είναι στα Αγγλικά τότε πρέπει και εσύ να απαντήσεις στα Αγγλικά, αν είναι στα Ελληνικά τότε πρέπει να απαντήσεις στα Ελληνικά.
+    Δεν πρέπει να αναφέρεις ότι η απάντηση σου προέρχεται από την βάση γνώσεων.
 
     Ερώτηση: {question}
 
