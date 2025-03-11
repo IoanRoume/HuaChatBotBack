@@ -91,7 +91,6 @@ def reRankingRetriever_local(query, retriever):
     documents = [doc.page_content if hasattr(doc, "page_content") else str(doc) for doc in retrieved_documents]
 
     ranked_indexes = rerank(query, documents)
-
     ranked_indexes = ranked_indexes[:5]
 
     filtered_documents = [retrieved_documents[i] for i in ranked_indexes]
@@ -122,38 +121,38 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-last_request_time = time.time()
-inactive_time = 3600
-allowCleanup = True
-areModelsWiped = False
-lock = threading.Lock()
+# last_request_time = time.time()
+# inactive_time = 3600
+# allowCleanup = True
+# areModelsWiped = False
+# lock = threading.Lock()
 
-def check_inactivity():
-    """Background thread to check for inactivity."""
-    global last_request_time
-    while True:
-        with lock:
-            elapsed_time = time.time() - last_request_time
-            if elapsed_time > inactive_time and allowCleanup:
-                print("No activity for 1 Hour. Cleaning Cache...", file=sys.stderr)
-                cleanup()
-        time.sleep(900)
+# def check_inactivity():
+#     """Background thread to check for inactivity."""
+#     global last_request_time
+#     while True:
+#         with lock:
+#             elapsed_time = time.time() - last_request_time
+#             if elapsed_time > inactive_time and allowCleanup:
+#                 print("No activity for 1 Hour. Cleaning Cache...", file=sys.stderr)
+#                 cleanup()
+#         time.sleep(900)
 
 
-def cleanup():
-    global areModelsWiped, tokenizer, reranker_model, retriever, vectordb, embedding, allowCleanup, chatModel
-    torch.cuda.empty_cache()
-    gc.collect()
-    allowCleanup = False
-    del tokenizer, reranker_model, retriever, vectordb, embedding, chatModel
-    areModelsWiped = True
+# def cleanup():
+#     global areModelsWiped, tokenizer, reranker_model, retriever, vectordb, embedding, allowCleanup, chatModel
+#     torch.cuda.empty_cache()
+#     gc.collect()
+#     allowCleanup = False
+#     del tokenizer, reranker_model, retriever, vectordb, embedding, chatModel
+#     areModelsWiped = True
 
-@app.middleware("http")
-async def update_last_request_time(request: Request, call_next):
-    global last_request_time, allowCleanup, areModelsWiped
-    allowCleanup = True
-    last_request_time = time.time()
-    return await call_next(request)
+# @app.middleware("http")
+# async def update_last_request_time(request: Request, call_next):
+#     global last_request_time, allowCleanup, areModelsWiped
+#     # allowCleanup = True
+#     last_request_time = time.time()
+#     return await call_next(request)
 
 
 @app.get("/ping")
@@ -181,31 +180,31 @@ def get_next_id():
     return new_id
 
 
-def load_models():
-    global areModelsWiped, tokenizer,reranker_model, retriever, vectordb, embedding, chatModel
-    with lock:
-        if not areModelsWiped:
-            return
+# def load_models():
+#     global areModelsWiped, tokenizer,reranker_model, retriever, vectordb, embedding, chatModel
+#     with lock:
+#         if not areModelsWiped:
+#             return
         
-        print(f"Reinitializing models...", file=sys.stderr)
+#         print(f"Reinitializing models...", file=sys.stderr)
 
-        tokenizer = AutoTokenizer.from_pretrained("Alibaba-NLP/gte-multilingual-reranker-base", trust_remote_code=True)       
-        reranker_model = AutoModelForSequenceClassification.from_pretrained("Alibaba-NLP/gte-multilingual-reranker-base", trust_remote_code=True).to("cuda" if torch.cuda.is_available() else "cpu")
+#         tokenizer = AutoTokenizer.from_pretrained("Alibaba-NLP/gte-multilingual-reranker-base", trust_remote_code=True)       
+#         reranker_model = AutoModelForSequenceClassification.from_pretrained("Alibaba-NLP/gte-multilingual-reranker-base", trust_remote_code=True).to("cuda" if torch.cuda.is_available() else "cpu")
 
-        persist_directory = 'db_el'
-        embedding = HuggingFaceEmbeddings(
-            model_name="nomic-ai/nomic-embed-text-v2-moe",
-            model_kwargs={'device': 'cuda' if torch.cuda.is_available() else 'cpu', 'trust_remote_code': True},
-            encode_kwargs={'normalize_embeddings': False}
-        )
+#         persist_directory = 'db_el'
+#         embedding = HuggingFaceEmbeddings(
+#             model_name="nomic-ai/nomic-embed-text-v2-moe",
+#             model_kwargs={'device': 'cuda' if torch.cuda.is_available() else 'cpu', 'trust_remote_code': True},
+#             encode_kwargs={'normalize_embeddings': False}
+#         )
 
-        vectordb = Chroma(persist_directory=persist_directory, embedding_function=embedding)
-        retriever = vectordb.as_retriever(search_kwargs={"k": 40})
+#         vectordb = Chroma(persist_directory=persist_directory, embedding_function=embedding)
+#         retriever = vectordb.as_retriever(search_kwargs={"k": 40})
 
-        chatModel = Llama.from_pretrained(repo_id="bartowski/ilsp_Llama-Krikri-8B-Instruct-GGUF", filename="ilsp_Llama-Krikri-8B-Instruct-Q4_K_M.gguf", n_ctx=8192, n_gpu_layers=-1)
+#         chatModel = Llama.from_pretrained(repo_id="bartowski/ilsp_Llama-Krikri-8B-Instruct-GGUF", filename="ilsp_Llama-Krikri-8B-Instruct-Q4_K_M.gguf", n_ctx=8192, n_gpu_layers=-1)
 
-        areModelsWiped = False
-        print("Models reinitialized", file=sys.stderr)
+#         areModelsWiped = False
+#         print("Models reinitialized", file=sys.stderr)
 
 
 class ChatRequest(BaseModel):
@@ -214,7 +213,7 @@ class ChatRequest(BaseModel):
 @app.post("/chat")
 async def run_chat(request: ChatRequest):
     #global chatModel
-    load_models()
+    # load_models()
     try:
         #chatModel = Llama.from_pretrained(repo_id=repo_id_chat_model, filename=filename_chat_model, n_ctx=8192, n_gpu_layers=-1)
         documents = reRankingRetriever_local(request.message, retriever)
@@ -278,8 +277,8 @@ async def save_feedback(feedback: FeedbackRequest):
     return {"message": "Feedback saved!", "id": user_id}
 
 
-thread = threading.Thread(target=check_inactivity, daemon=True)
-thread.start()
+# thread = threading.Thread(target=check_inactivity, daemon=True)
+# thread.start()
 
 if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
