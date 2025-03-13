@@ -20,6 +20,10 @@ import torch
 import gc
 
 
+import networkx as nx
+import unidecode  
+import re
+
 class MarkdownTitleTextSplitter(TextSplitter):
     def split_text(self, text: str):
         sections = []
@@ -97,10 +101,10 @@ def reRankingRetriever_local(query, retriever):
     return filtered_documents
 
 
-def query_model(question, docs, chatModel):
+def query_model(question, docs, chatModel, final_result_graph):
 
-    prompt_text = rag_prompt.format(question=question, context=docs)
-
+    prompt_text = rag_prompt.format(question=question, context=docs, graph=final_result_graph)
+    print(prompt_text, file=sys.stderr)
     response = chatModel.create_chat_completion(messages=[{"role": "user", "content": prompt_text}])
 
 
@@ -109,7 +113,346 @@ def query_model(question, docs, chatModel):
 
 
 
+G = nx.Graph()
 
+subjects = {
+    "Προγραμματισμός ΙΙ": {
+        "teachers": ["Γ. Παπαδόπουλος"],
+        "locations": ["Αμφιθέατρο", "Εργαστήριο 4ου Ορόφου", "Εργαστήριο 2ου Ορόφου"]
+    },
+    "Αριθμητική Ανάλυση": {
+        "teachers": ["Χ. Μιχαλακέλης", "Ε. Φιλιοπούλου"],
+        "locations": ["Αμφιθέατρο"]
+    },
+    "Αντικειμενοστρεφής Προγραμματισμός Ι": {
+        "teachers": ["Κ. Μπαρδάκη", "Α. Χαραλαμπίδης", "Β. Ευθυμίου"],
+        "locations": ["Αμφιθέατρο", "Εργαστήριο 4ου Ορόφου"]
+    },
+    "Πιθανότητες": {
+        "teachers": ["Μ. Βαμβακάρη"],
+        "locations": ["Αμφιθέατρο"]
+    },
+    "Αρχιτεκτονική Υπολογιστών": {
+        "teachers": ["Εξωτερικός Διδάσκοντες"],
+        "locations": ["Αμφιθέατρο", "Εργαστήριο 4ου Ορόφου", "Εργαστήριο 2ου Ορόφου"]
+    },
+    "Μεθοδολογία Επιστημονικής Έρευνας": {
+        "teachers": ["Χ. Σοφιανοπούλου", "A. Γασπαρινάτου"],
+        "locations": ["Αμφιθέατρο", "Εργαστήριο 2ου Ορόφου"]
+    },
+    "Σήματα & Συστήματα": {
+        "teachers": ["Π. Ριζομυλιώτης"],
+        "locations": ["Αμφιθέατρο"]
+    },
+    "Βάσεις Δεδομένων": {
+        "teachers": ["Η. Βαρλάμης", "Β. Ευθυμίου"],
+        "locations": ["Εργαστήριο 2ου Ορόφου", "Αμφιθέατρο"]
+    },
+    "Τεχνολογίες Εφαρμογών Ιστού": {
+        "teachers": ["Εξωτερικός Διδάσκων"],
+        "locations": ["Αμφιθέατρο", "Εργαστήριο 4ου Ορόφου"]
+    },
+    "Ανάλυση Συστημάτων και Τεχνολογία Λογισμικού": {
+        "teachers": ["Κ. Μπαρδάκη"],
+        "locations": ["Αμφιθέατρο"]
+    },
+    "Υπηρεσίες και Συστήματα Διαδικτύου": {
+        "teachers": ["Γ. Κουσιουρής"],
+        "locations": ["Αίθουσα 2.3", "Εργαστήριο 4ου Ορόφου"]
+    },
+    "Ψηφιακή Επεξεργασία Εικόνας και Εφαρμογές": {
+        "teachers": ["Γ. Παπαδόπουλος"],
+        "locations": ["Αίθουσα 2.3", "Εργαστήριο 4ου Ορόφου"]
+    },
+    "Συστήματα Λήψης Αποφάσεων": {
+        "teachers": ["Γ. Δέδε"],
+        "locations": ["Αίθουσα 2.3", "Εργαστήριο 2ου Ορόφου"]
+    },
+    "Καινοτομία και Επιχειρηματικότητα": {
+        "teachers": ["Στ. Λουνής"],
+        "locations": ["Αίθουσα 1.2 Χαροκόπου 89"]
+    },
+    "Βασικές Έννοιες κι Εργαλεία DevOps": {
+        "teachers": ["Α. Τσαδήμας"],
+        "locations": ["Εργαστήριο 4ου Ορόφου"]
+    },
+    "Αλγόριθμοι και Πολυπλοκότητα)": {
+        "teachers": ["Δ. Μιχαήλ"],
+        "locations": ["Αμφιθέατρο"]
+    },
+    "Προσομοίωση": {
+        "teachers": ["Β. Δαλάκας"],
+        "locations": ["Αμφιθέατρο", "Εργαστήριο 2ου Ορόφου"]
+    },
+    "Εφαρμογές Ηλεκτρονικής και Διαδίκτυο των Πραγμάτων": {
+        "teachers": ["Θ. Καμαλάκης"],
+        "locations": ["Αίθουσα 2.3"]
+    },
+    "Οπτικές Επικοινωνίες": {
+        "teachers": ["Θ. Καμαλάκης"],
+        "locations": ["Αίθουσα 2.3"]
+    },
+    "Τεχνητή Νοημοσύνη": {
+        "teachers": ["Χ. Δίου"],
+        "locations": ["Αμφιθέατρο"]
+    },
+    "Μεταγλωττιστές": {
+        "teachers": ["Α. Χαραλαμπίδης"],
+        "locations": ["Αίθουσα 3.9", "Εργαστήριο 2ου Ορόφου"]
+    },
+    "Διδακτική της Πληροφορικής": {
+        "teachers": ["Χ. Σοφιανοπούλου", "Α. Γασπαρινάτου"],
+        "locations": ["Αίθουσα 3.9", "Εργαστήριο 2ου Ορόφου"]
+    },
+    "Παιδαγωγική Ψυχολογία": {
+        "teachers": ["Δ. Ζμπάινος"],
+        "locations": ["Αίθουσα 3.9"]
+    },
+    "Διοίκηση Έργων Πληροφορικής": {
+        "teachers": ["Μ. Σταμάτη", "Ε. Φιλιοπούλου"],
+        "locations": ["Αίθουσα 3.9", "Εργαστήριο 2ου Ορόφου"]
+    },
+    "Πληροφοριακά Συστήματα και Ηλεκτρονικό Επιχειρείν": {
+        "teachers": ["Μ. Σταμάτη"],
+        "locations": ["Αίθουσα 3.9"]
+    },
+    "Προγραμματισμός Συστημάτων": {
+        "teachers": ["Εξωτερικός Διδάσκων"],
+        "locations": ["Αίθουσα 3.9"]
+    },
+    "Κρυπτογραφία": {
+        "teachers": ["Π. Ριζομυλιώτης"],
+        "locations": ["Αίθουσα 3.9"]
+    },
+    "Διαχείριση Υπολογιστικού Νέφους": {
+        "teachers": ["Εξωτερικός Διδάσκων"],
+        "locations": ["Αίθουσα 3.9", "Εργαστήριο 4ου Ορόφου"]
+    },
+    "Διαχείριση Δικτύων Βασισμένων στο Λογισμικό": {
+        "teachers": ["Ε. Λιώτου"],
+        "locations": ["Εργαστήριο 2ου Ορόφου"]
+    },
+    "Ανάκτηση Πληροφορίας και Επεξεργασία Φυσικής Γλώσσας": {
+        "teachers": ["Η. Βαρλάμης"],
+        "locations": ["Εργαστήριο 2ου Ορόφου"]
+    },
+    "Προγραμματισμός Ι": {
+        "teachers": ["Χ. Δίου", "Γ. Παπαδόπουλος", "Α. Γασπαρηνάτου"],
+        "locations": ["Εργαστήριο 4ου Ορόφου","Αμφιθέατρο"]
+    },
+    "Διακριτά Μαθηματικά": {
+        "teachers": ["Μ. Βαμβακάρη"],
+        "locations": ["Αμφιθέατρο"]
+    },
+    "Λογική Σχεδίαση": {
+        "teachers": ["Γ. Φραγκιαδάκης"],
+        "locations": ["Εργαστήριο 2ου Ορόφου","Αμφιθέατρο"]
+    },
+    "Ψηφιακή Τεχνολογία και Εφαρμογές Τηλεματικής": {
+        "teachers": ["Α. Γασπαρηνάτου"],
+        "locations": ["Αμφιθέατρο"]
+    },
+    "Υπολογιστικά Μαθηματικά": {
+        "teachers": ["Χ. Μιχαλακέλης"],
+        "locations": ["Αμφιθέατρο"]
+    },
+    "Ψηφιακή Τεχνολογία και Εφαρμογές Τηλεματικής": {
+        "teachers": ["Α. Γασπαρηνάτου"],
+        "locations": ["Αμφιθέατρο"],
+        "days": ["Πέμπτη"]
+    },
+    "Υπολογιστικά Μαθηματικά": {
+        "teachers": ["Χ. Μιχαλακέλης"],
+        "locations": ["Αμφιθέατρο"],
+        "days": ["Παρασκευή"]
+    },
+    "Αντικειμενοστραφής Προγραμματισμός ΙΙ": {
+        "teachers": ["Α. Χαραλαμπίδης"],
+        "locations": ["Αμφιθέατρο"],
+        "days": ["Δευτέρα"]
+    },
+    "Στατιστική": {
+        "teachers": ["Μ. Βαμβακάρη"],
+        "locations": ["Αμφιθέατρο", "Εργαστήριο 2ου Ορόφου"],
+        "days": ["Τρίτη"]
+    },
+    "Δομές Δεδομένων": {
+        "teachers": ["Δ. Μιχαήλ"],
+        "locations": ["Αμφιθέατρο", "Εργαστήριο 2ου Ορόφου"],
+        "days": ["Τρίτη", "Πέμπτη"]
+    },
+    "Λειτουργικά Συστήματα": {
+        "teachers": ["Α. Τσαδήμας", "Γ. Κουσιουρής"],
+        "locations": ["Εργαστήριο 4ου Ορόφου", "Αμφιθέατρο"],
+        "days": ["Δευτέρα", "Παρασκευή"]
+    },
+    "Δίκτυα Υπολογιστών": {
+        "teachers": ["Ε. Λιώτου"],
+        "locations": ["Εργαστήριο 2ου Ορόφου", "Αμφιθέατρο"],
+        "days": ["Δευτέρα", "Πέμπτη"]
+    },
+    "Κατανεμημένα Συστήματα": {
+        "teachers": ["Α. Τσαδήμας", "Μ. Νικολαϊδη"],
+        "locations": ["Εργαστήριο 2ου Ορόφου", "Αμφιθέατρο"],
+        "days": ["Δευτέρα", "Τετάρτη"]
+    },
+    "Πληροφοριακά Συστήματα": {
+        "teachers": ["Μ. Σταμάτη"],
+        "locations": ["Αμφιθέατρο"],
+        "days": ["Δευτέρα"]
+    },
+    "Τεχνολογίες Διαδικτύου": {
+        "teachers": ["Ε. Λιώτου"],
+        "locations": ["Αίθουσα 3.7"],
+        "days": ["Τρίτη"]
+    },
+    "Οικονομικά της Ψηφιακής Τεχνολογίας": {
+        "teachers": ["Χ. Μιχαλακέλης"],
+        "locations": ["Αίθουσα 2.3"],
+        "days": ["Τρίτη"]
+    },
+    "Τηλεπικοινωνιακά Συστήματα": {
+        "teachers": ["Θ. Καμαλάκης"],
+        "locations": ["Αμφιθέατρο"],
+        "days": ["Τετάρτη"]
+    },
+    "Προηγμένα Θέματα Λειτουργικών Συστημάτων": {
+        "teachers": ["Χ. Ανδρίκος"],
+        "locations": ["Αίθουσα 3.9"],
+        "days": ["Τετάρτη"]
+    },
+    "Σχεδίαση ΒΔ και Κατανεμημένες ΒΔ": {
+        "teachers": ["Β. Ευθυμίου"],
+        "locations": ["Αίθουσα 2.3", "Εργαστήριο 2ου Ορόφου"],
+        "days": ["Παρασκευή"]
+    },
+    "Διαχείριση Επιχειρηματικών Διαδικασιών στην Εφοδιαστική Αλυσίδα": {
+        "teachers": ["Κ. Μπαρδάκη"],
+        "locations": ["Αίθουσα 2.3"],
+        "days": ["Παρασκευή"]
+    },
+    "Ανάπτυξη Κινητών Εφαρμογών": {
+        "teachers": ["Ε. Χονδρογιάννης"],
+        "locations": ["Αίθουσα 2.3"],
+        "days": ["Παρασκευή"]
+    },
+    "Απόδοση Συστημάτων": {
+        "teachers": ["Γ. Κουσιουρής"],
+        "locations": ["Αίθουσα 3.9", "Εργαστήριο 2ου Ορόφου"],
+        "days": ["Δευτέρα"]
+    },
+    "Κοινωνία και ΤΠΕ": {
+        "teachers": ["Χ. Σοφιανοπούλου"],
+        "locations": ["Αίθουσα 3.9"],
+        "days": ["Δευτέρα"]
+    },
+    "Εφαρμογές Τηλεματικής στις Μεταφορές και την Υγεία": {
+        "teachers": ["Γ. Δημητρακόπουλος", "Χ. Δίου"],
+        "locations": ["Αίθουσα 3.9"],
+        "days": ["Δευτέρα"]
+    },
+    "Συστήματα Κινητών Επικοινωνιών": {
+        "teachers": ["Γ. Δημητρακόπουλος"],
+        "locations": ["Αίθουσα 3.9"],
+        "days": ["Τρίτη"]
+    },
+    "Αποτίμηση Επενδύσεων ΤΠΕ": {
+        "teachers": ["Χ. Μιχαλακέλης"],
+        "locations": ["Αίθουσα 3.9"],
+        "days": ["Τρίτη"]
+    },
+    "Πληροφορική και Εκπαίδευση": {
+        "teachers": ["Α. Γασπαρινάτου"],
+        "locations": ["Αίθουσα 3.9", "Εργαστήριο 4ου Ορόφου"],
+        "days": ["Τρίτη"]
+    },
+    "Μηχανική Μάθηση και Εφαρμογές": {
+        "teachers": ["Χ. Δίου"],
+        "locations": ["Αίθουσα 3.9"],
+        "days": ["Τετάρτη"]
+    },
+    "Αξιολόγηση Συστημάτων και Διεπαφών": {
+        "teachers": ["Γ. Δέδε"],
+        "locations": ["Αμφιθέατρο", "Εργαστήριο 2ου Ορόφου"],
+        "days": ["Τετάρτη"]
+    },
+    "Διδακτική ρομποτικής και εκπαίδευση STEM": {
+        "teachers": ["Ε. Φιλιοπούλου"],
+        "locations": ["Αίθουσα 3.9", "Εργαστήριο 4ου Ορόφου"],
+        "days": ["Πέμπτη"]
+    },
+    "Παράλληλοι Υπολογιστές και Αλγόριθμοι": {
+        "teachers": ["Π. Μιχαήλ"],
+        "locations": ["Εργαστήριο 4ου Ορόφου"],
+        "days": ["Πέμπτη"]
+    },
+    "Τεχνολογία Γραφημάτων και Εφαρμογές": {
+        "teachers": ["Δ. Μιχαήλ"],
+        "locations": ["Αίθουσα 3.9", "Εργαστήριο 2ου Ορόφου"],
+        "days": ["Πέμπτη"]
+    },
+    "Εξόρυξη Δεδομένων": {
+        "teachers": ["Η. Βαρλάμης"],
+        "locations": ["Αίθουσα 3.9", "Εργαστήριο 2ου Ορόφου"],
+        "days": ["Παρασκευή"]
+    },
+    "Ασφάλεια Πληροφοριακών Συστημάτων": {
+        "teachers": ["Π. Ριζομυλιώτης"],
+        "locations": ["Αμφιθέατρο"],
+        "days": ["Παρασκευή"]
+    }
+    
+}
+
+
+for subject, data in subjects.items():
+    G.add_node(subject, type="subject")
+
+    for teacher in data["teachers"]:
+        G.add_node(teacher, type="teacher")
+        G.add_edge(subject, teacher) 
+
+    for location in data["locations"]:
+        G.add_node(location, type="location")
+        G.add_edge(subject, location)  
+
+
+with open("/home/it2021087/chatBot/Hua/stopwords.txt", "r", encoding="utf-8") as f:
+    stop_words = set(word.strip() for word in f.readlines())
+
+def find_graph_results(graph, user_query):
+    global final_result_graph
+    normalized_query = unidecode.unidecode(user_query).lower()
+    result= ""
+    nodes = [n for n, d in graph.nodes(data=True)]
+
+    matched_nodes = [t for t in nodes if normalized_query in unidecode.unidecode(t).lower()]
+
+    if matched_nodes:
+        for node in matched_nodes:
+            neighbors = [n for n in graph.neighbors(node)]
+            if graph.nodes[node]['type'] == 'teacher':
+              result = f"Ο διδάσκοντας {node} έχει τα μαθήματα: {', '.join(neighbors)}\n"
+            elif graph.nodes[node]['type'] == 'subject':
+              teachers = []
+              rooms = []
+              
+              for neighbor in neighbors:
+                  neighbor_type = graph.nodes[neighbor].get('type', 'unknown') 
+                  
+                  if neighbor_type == 'teacher':
+                      teachers.append(neighbor)
+                  elif neighbor_type == 'location':
+                      rooms.append(neighbor)
+              
+              teacher_text = f"Διδάσκεται από: {', '.join(teachers)}" if teachers else ""
+              room_text = f"Στην αίθουσα: {', '.join(rooms)}" if rooms else ""
+              
+              result = f"Το μάθημα {node} {teacher_text} {room_text}".strip() + "\n"
+
+            else:
+              result = f"Η Αίθουσα {node} έχει τα μαθήματα: {', '.join(neighbors)}\n"
+            final_result_graph.add(result)
 
 app = FastAPI()
 
@@ -212,12 +555,19 @@ class ChatRequest(BaseModel):
 
 @app.post("/chat")
 async def run_chat(request: ChatRequest):
+    global final_result_graph
     #global chatModel
     # load_models()
+    final_result_graph = set()
     try:
+        words = re.findall(r'\b\w+\b', request.message.lower()) 
+        filtered_words = [word for word in words if word not in stop_words]
+        for word in filtered_words:
+            find_graph_results(G, word)
+        print(final_result_graph)
         #chatModel = Llama.from_pretrained(repo_id=repo_id_chat_model, filename=filename_chat_model, n_ctx=8192, n_gpu_layers=-1)
         documents = reRankingRetriever_local(request.message, retriever)
-        generated_answer = query_model(request.message, documents, chatModel)
+        generated_answer = query_model(request.message, documents, chatModel, final_result_graph)
         #del chatModel
         #chatModel = None
         torch.cuda.empty_cache()
@@ -336,16 +686,20 @@ if __name__ == "__main__":
     Ερώτηση: {question}
 
     Πληροφορίες από τη βάση γνώσεων:
+    {graph}
+    ---
     {context}
 
     Απάντηση:
     """
 
     rag_prompt = PromptTemplate(
-        input_variables=["question", "context"],
+        input_variables=["question", "context", "graph"],
         template=template
     )
     print(f"Loaded chat model")
+
+    final_result_graph = set()
 
 
     import uvicorn
