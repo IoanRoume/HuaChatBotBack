@@ -90,7 +90,8 @@ def rerank(query, documents, batch_size=16):
     return ranked_indexes
 
 
-def reRankingRetriever_local(query, retriever):
+
+def reRankingRetriever_local(query, retriever, retrieverGraph):
     retrieved_documents = retriever.invoke(query)
     documents = [doc.page_content if hasattr(doc, "page_content") else str(doc) for doc in retrieved_documents]
 
@@ -98,7 +99,10 @@ def reRankingRetriever_local(query, retriever):
     ranked_indexes = ranked_indexes[:5]
 
     filtered_documents = [retrieved_documents[i] for i in ranked_indexes]
-    return filtered_documents
+
+    #Graph reranking
+    retrieved_graphs = retrieverGraph.invoke(query)
+    return filtered_documents, retrieved_graphs
 
 
 def query_model(question, docs, chatModel, final_result_graph):
@@ -417,16 +421,13 @@ for subject, data in subjects.items():
         G.add_edge(subject, location)  
 
 
-with open("/home/it2021087/chatBot/Hua/stopwords.txt", "r", encoding="utf-8") as f:
-    stop_words = set(word.strip() for word in f.readlines())
-
-def find_graph_results(graph, user_query):
+def find_graph_results(graph, word):
     global final_result_graph
-    normalized_query = unidecode.unidecode(user_query).lower()
+    normalized_word = unidecode.unidecode(word).lower()
     result= ""
     nodes = [n for n, d in graph.nodes(data=True)]
 
-    matched_nodes = [t for t in nodes if normalized_query in unidecode.unidecode(t).lower()]
+    matched_nodes = [t for t in nodes if normalized_word in unidecode.unidecode(t).lower()]
 
     if matched_nodes:
         for node in matched_nodes:
@@ -464,38 +465,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# last_request_time = time.time()
-# inactive_time = 3600
-# allowCleanup = True
-# areModelsWiped = False
-# lock = threading.Lock()
-
-# def check_inactivity():
-#     """Background thread to check for inactivity."""
-#     global last_request_time
-#     while True:
-#         with lock:
-#             elapsed_time = time.time() - last_request_time
-#             if elapsed_time > inactive_time and allowCleanup:
-#                 print("No activity for 1 Hour. Cleaning Cache...", file=sys.stderr)
-#                 cleanup()
-#         time.sleep(900)
-
-
-# def cleanup():
-#     global areModelsWiped, tokenizer, reranker_model, retriever, vectordb, embedding, allowCleanup, chatModel
-#     torch.cuda.empty_cache()
-#     gc.collect()
-#     allowCleanup = False
-#     del tokenizer, reranker_model, retriever, vectordb, embedding, chatModel
-#     areModelsWiped = True
-
-# @app.middleware("http")
-# async def update_last_request_time(request: Request, call_next):
-#     global last_request_time, allowCleanup, areModelsWiped
-#     # allowCleanup = True
-#     last_request_time = time.time()
-#     return await call_next(request)
 
 
 @app.get("/ping")
@@ -523,32 +492,6 @@ def get_next_id():
     return new_id
 
 
-# def load_models():
-#     global areModelsWiped, tokenizer,reranker_model, retriever, vectordb, embedding, chatModel
-#     with lock:
-#         if not areModelsWiped:
-#             return
-        
-#         print(f"Reinitializing models...", file=sys.stderr)
-
-#         tokenizer = AutoTokenizer.from_pretrained("Alibaba-NLP/gte-multilingual-reranker-base", trust_remote_code=True)       
-#         reranker_model = AutoModelForSequenceClassification.from_pretrained("Alibaba-NLP/gte-multilingual-reranker-base", trust_remote_code=True).to("cuda" if torch.cuda.is_available() else "cpu")
-
-#         persist_directory = 'db_el'
-#         embedding = HuggingFaceEmbeddings(
-#             model_name="nomic-ai/nomic-embed-text-v2-moe",
-#             model_kwargs={'device': 'cuda' if torch.cuda.is_available() else 'cpu', 'trust_remote_code': True},
-#             encode_kwargs={'normalize_embeddings': False}
-#         )
-
-#         vectordb = Chroma(persist_directory=persist_directory, embedding_function=embedding)
-#         retriever = vectordb.as_retriever(search_kwargs={"k": 40})
-
-#         chatModel = Llama.from_pretrained(repo_id="bartowski/ilsp_Llama-Krikri-8B-Instruct-GGUF", filename="ilsp_Llama-Krikri-8B-Instruct-Q4_K_M.gguf", n_ctx=8192, n_gpu_layers=-1)
-
-#         areModelsWiped = False
-#         print("Models reinitialized", file=sys.stderr)
-
 
 class ChatRequest(BaseModel):
     message: str
@@ -556,20 +499,15 @@ class ChatRequest(BaseModel):
 @app.post("/chat")
 async def run_chat(request: ChatRequest):
     global final_result_graph
-    #global chatModel
-    # load_models()
     final_result_graph = set()
     try:
-        words = re.findall(r'\b\w+\b', request.message.lower()) 
-        filtered_words = [word for word in words if word not in stop_words]
-        for word in filtered_words:
-            find_graph_results(G, word)
+        documents, graphs = reRankingRetriever_local(request.message, retriever, retrieverGraph)
+        graphs_string = [doc.page_content if hasattr(doc, "page_content") else str(doc) for doc in graphs]
+        for word in graphs_string:
+            find_graph_results(G,word)
         print(final_result_graph)
-        #chatModel = Llama.from_pretrained(repo_id=repo_id_chat_model, filename=filename_chat_model, n_ctx=8192, n_gpu_layers=-1)
-        documents = reRankingRetriever_local(request.message, retriever)
         generated_answer = query_model(request.message, documents, chatModel, final_result_graph)
-        #del chatModel
-        #chatModel = None
+
         torch.cuda.empty_cache()
         gc.collect()
         return {"message": generated_answer}
@@ -660,6 +598,19 @@ if __name__ == "__main__":
                                      persist_directory=persist_directory)
 
     retriever = vectordb.as_retriever(search_kwargs={"k": 40})
+
+
+    persist_directory_graph = 'graph_el'
+
+    graph_nodes = [n for n in G.nodes()]
+
+    vectordb_graph = Chroma.from_texts(texts=graph_nodes, embedding=embedding, persist_directory=persist_directory_graph)
+    retrieverGraph = vectordb_graph.as_retriever(search_kwargs={"k": 3})
+                                                                     
+
+
+
+
     print(f"Loading reranking model")
     model_name = "Alibaba-NLP/gte-multilingual-reranker-base"
 
