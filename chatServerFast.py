@@ -131,6 +131,23 @@ G = nx.Graph()
 with open('/home/it2021087/chatBot/Hua/subjects.json', 'r', encoding='utf-8') as f:
     subjects = json.load(f)
 
+with open('/home/it2021087/chatBot/Hua/staff.json', 'r', encoding='utf-8') as f:
+    staff = json.load(f)
+
+G.add_node("Διδάσκοντες", type = "faculty")
+
+for staff, data in staff.items():
+  G.add_node(staff,type = "secretary")
+
+  for staff_name in data["Γραμματέας"]:
+    G.add_node(staff_name, type="secretary_staff")
+    G.add_edge(staff,staff_name)
+  for email in data["email"]:
+    G.add_node(email, type="secretary_email")
+    G.add_edge(staff,email)
+  for phone in data["Τηλέφωνο"]:
+    G.add_node(phone, type="secretary_phone")
+    G.add_edge(staff,phone)
 
 for subject, data in subjects.items():
     G.add_node(subject, type="subject")
@@ -138,6 +155,7 @@ for subject, data in subjects.items():
     for teacher in data["teachers"]:
         G.add_node(teacher, type="teacher")
         G.add_edge(subject, teacher)  
+        G.add_edge("Διδάσκοντες",teacher)
 
     for location in data["locations"]:
         G.add_node(location, type="location")
@@ -322,6 +340,26 @@ if __name__ == "__main__":
 
         elif node_type == 'day':
             result = f"Στην ημέρα {node} διεξάγονται τα μαθήματα: {', '.join(neighbors)}\n"
+        elif node_type == 'faculty':
+              result = f"Οι {node} του τμήματος Πληροφορικής και τηλεματικής είναι: {', '.join(neighbors)}\n"
+        elif node_type == 'secretary':
+              staff = []
+              email = []
+              phone = []
+              for neightbor in neighbors:
+                neighbor_type = G.nodes[neightbor]['type']
+
+                if neighbor_type == "secretary_staff":
+                  staff.append(neightbor)
+                if neighbor_type == "secretary_email":
+                  email.append(neightbor)
+                if neighbor_type == "secretary_phone":
+                  phone.append(neightbor)
+                staff_text = f"{', '.join(staff)}"
+
+              result = f"Το προσωπικό της {node} του τμήματος Πληροφορικής και τηλεματικής είναι: {', '.join(staff)}\n"
+              graph_results.append(result)
+              result = f"Το Εmail της {node} του τμήματος Πληροφορικής και τηλεματικής είναι: {', '.join(email)}, και το Τηλέφωνο της {node} είναι: {', '.join(phone)}\n"
 
         else:
             result = f"To {node} περιλαμβάνει τα μαθήματα: {', '.join(neighbors)}\n"
