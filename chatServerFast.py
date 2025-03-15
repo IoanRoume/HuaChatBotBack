@@ -102,6 +102,7 @@ def reRankingRetriever_local(query, retriever, history):
     match = re.search(r'"([^"]*)"', rephraseResponse['choices'][0]['message']['content'])
     if match:
         question = match.group(1)
+    print(f"Rephrased Query: {question}\n\n")
     retrieved_documents = retriever.invoke(question)
     documents = [doc.page_content if hasattr(doc, "page_content") else str(doc) for doc in retrieved_documents]
 
