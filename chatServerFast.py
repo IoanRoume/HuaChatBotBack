@@ -19,6 +19,8 @@ from langchain.prompts import PromptTemplate
 import torch
 import gc
 
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 
 import networkx as nx
 import unidecode  
@@ -91,22 +93,29 @@ def rerank(query, documents, batch_size=16):
 
 
 
+
 def reRankingRetriever_local(query, retriever, history):
-    retrieved_documents = retriever.invoke(f"New query: {query}, History: {history}")
+    print(f"Original Query: {query}\n\n")
+    rephrase_prompt_format = rephrase_prompt.format(history=history, query=query)
+    rephraseResponse = chatModel.create_chat_completion(messages=[{"role": "system", "content": rephrase_prompt_format}])
+
+    match = re.search(r'"([^"]*)"', rephraseResponse['choices'][0]['message']['content'])
+    if match:
+        question = match.group(1)
+    retrieved_documents = retriever.invoke(question)
     documents = [doc.page_content if hasattr(doc, "page_content") else str(doc) for doc in retrieved_documents]
 
-    ranked_indexes = rerank(f"New query: {query}, History: {history}", documents)
+    ranked_indexes = rerank(question, documents)
     
     ranked_indexes = ranked_indexes[:5]
     filtered_documents = [retrieved_documents[i] for i in ranked_indexes]
 
-    return filtered_documents
+    return filtered_documents, question
 
 
 
 def query_model(question, docs, chatModel, history):
     formatted_docs = "\n".join([f"\n\t{i+1} - {doc.page_content}" for i, doc in enumerate(docs)])
-
     prompt_text = rag_prompt.format(question=question, context=formatted_docs, history=history) 
     print(prompt_text)
     response = chatModel.create_chat_completion(messages=[{"role": "user", "content": prompt_text}])
@@ -192,8 +201,8 @@ class ChatRequest(BaseModel):
 async def run_chat(request: ChatRequest):
     try:
         message , history = request.message, request.history
-        documents = reRankingRetriever_local(message, retriever, history)
-        generated_answer = query_model(message, documents, chatModel, history)
+        documents, newQuestion = reRankingRetriever_local(message, retriever, history)
+        generated_answer = query_model(newQuestion, documents, chatModel, history)
 
         torch.cuda.empty_cache()
         gc.collect()
@@ -366,6 +375,48 @@ if __name__ == "__main__":
         input_variables=["question", "context", "history"],
         template=template
     )
+
+
+    template_rephrase = """
+Δεδομένου ενός ιστορικού συνομιλίας και της τελευταίας ερώτησης του χρήστη,  
+η οποία μπορεί να αναφέρεται σε προηγούμενο περιεχόμενο της συνομιλίας,  
+διαμόρφωσε μια αυτόνομη ερώτηση που να μπορεί να γίνει κατανοητή χωρίς το ιστορικό.  
+
+# **Οδηγίες**  
+- **ΜΗΝ απαντήσεις στην ερώτηση.**  
+- **Επέστρεψε μόνο την αναδιατυπωμένη ερώτηση μέσα σε εισαγωγικά ("...").**  
+- **Αν η τελευταία ερώτηση δεν χρειάζεται αλλαγή, απλώς επέστρεψέ την όπως είναι, μέσα σε εισαγωγικά.**  
+- **Αν η τελευταία ερώτηση δεν σχετίζεται με το ιστορικό, μην την αλλάζεις.**  
+- **Μην προσθέτεις επιπλέον πληροφορίες, σχόλια ή απαντήσεις.**  
+
+## **Παραδείγματα**  
+### Παράδειγμα 1  
+- **Ιστορικό:** "Ποιος είναι ο A;"  
+- **Τελευταία ερώτηση:** "Πού βρίσκεται το γραφείο του;"  
+- **Αναμενόμενη έξοδος:** `"Πού βρίσκεται το γραφείο του A;"`  
+
+### Παράδειγμα 2  
+- **Ιστορικό:** (Κενό)  
+- **Τελευταία ερώτηση:** "Ποια μαθήματα διδάσκει ο B;"  
+- **Αναμενόμενη έξοδος:** `"Ποια μαθήματα διδάσκει ο B;"`  
+
+### Παράδειγμα 3  
+- **Ιστορικό:** "Ποιος είναι ο A;" 
+- **Τελευταία ερώτηση:** "Ποια είναι τα μαθήματα του Τέταρτου Έτους;"  
+- **Αναμενόμενη έξοδος:** `"Ποια είναι τα μαθήματα του Τέταρτου Έτους;"`  
+
+Ιστορικό Συνομιλίας: {history}  
+Τελευταία ερώτηση: {query}  
+
+Επαναδιατυπωμένο Κείμενο:  
+"""
+
+    rephrase_prompt = PromptTemplate(
+        input_variables=["history", "query"],
+        template=template_rephrase
+    )
+
+
     print(f"Loaded chat model")
 
 
