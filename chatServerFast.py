@@ -172,6 +172,14 @@ for subject, data in subjects.items():
     for year in data["year"]:
         G.add_node(year,type = "year")
         G.add_edge(subject, year)  
+        
+    for career in data["career_op"]:
+      G.add_node(career,type = "career_op")
+      G.add_edge(subject, career)
+
+    for decision in data["decision"]:
+      G.add_node(decision,type = "decision")
+      G.add_edge(subject, decision)
 
 
 app = FastAPI()
@@ -326,14 +334,16 @@ if __name__ == "__main__":
             days = [n for n in neighbors if G.nodes[n].get('type') == 'day']
             semesters = [n for n in neighbors if G.nodes[n].get('type') == 'semester']
             years = [n for n in neighbors if G.nodes[n].get('type') == 'year']
+            decision = [n for n in neighbors if G.nodes[n].get('type') == 'decision']
 
             teacher_text = f"Διδάσκεται από: {', '.join(teachers)}" if teachers else ""
             room_text = f"Στην αίθουσα: {', '.join(rooms)}" if rooms else ""
             days_text = f"Στις ημέρες: {', '.join(days)}" if days else ""
             semester_text = f"Στο {', '.join(semesters)}" if semesters else ""
             year_text = f"Στο {', '.join(years)}" if years else ""
+            decision_text = f"Το μάθημα είναι : {''.join(decision)}"
 
-            result = f"Το μάθημα {node}, {teacher_text}, {room_text}, {days_text}, {semester_text}, {year_text}".strip() + "\n"
+            result = f"Το μάθημα {node}, {teacher_text}, {room_text}, {days_text}, {semester_text}, {year_text}, {decision_text}".strip() + "\n"
 
         elif node_type == 'location':
             result = f"Η Αίθουσα {node} έχει τα μαθήματα: {', '.join(neighbors)}\n"
@@ -342,6 +352,10 @@ if __name__ == "__main__":
             result = f"Στην ημέρα {node} διεξάγονται τα μαθήματα: {', '.join(neighbors)}\n"
         elif node_type == 'faculty':
               result = f"Οι {node} του τμήματος Πληροφορικής και τηλεματικής είναι: {', '.join(neighbors)}\n"
+        elif node_type == 'career_op':
+              result = f"Για να εξελιχθείς ή να ειδικευτείς ως {node}, τα κατάλληλα μαθήματα που θα σε προετοιμάσουν καλύτερα είναι: {', '.join(neighbors)}.\n"
+        elif node_type == 'decision':
+              result = f"Τα μαθήματα που είναι {node}, στο τμήμα Πληροφορικής και Τηλεματικής είναι: {', '.join(neighbors)}.\n"
         elif node_type == 'secretary':
               staff = []
               email = []
