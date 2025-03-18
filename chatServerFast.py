@@ -101,17 +101,17 @@ def reRankingRetriever_local(query, retriever, history):
 
     match = re.search(r'"([^"]*)"', rephraseResponse['choices'][0]['message']['content'])
     if match:
-        question = match.group(1)
-    print(f"Rephrased Query: {question}\n\n")
-    retrieved_documents = retriever.invoke(question)
+        query = match.group(1)
+    print(f"Rephrased Query: {query}\n\n")
+    retrieved_documents = retriever.invoke(query)
     documents = [doc.page_content if hasattr(doc, "page_content") else str(doc) for doc in retrieved_documents]
 
-    ranked_indexes = rerank(question, documents)
+    ranked_indexes = rerank(query, documents)
     
     ranked_indexes = ranked_indexes[:5]
     filtered_documents = [retrieved_documents[i] for i in ranked_indexes]
 
-    return filtered_documents, question
+    return filtered_documents, query
 
 
 
@@ -326,7 +326,7 @@ if __name__ == "__main__":
         neighbors = list(G.neighbors(node))
         node_type = G.nodes[node].get('type', 'unknown')
         if node_type == 'teacher':
-            result = f"Ο διδάσκοντας {node} έχει τα μαθήματα: {', '.join(neighbors)}\n"
+            result = f"Ο διδάσκοντας {node} έχει τα μαθήματα: {', '.join([neightbor for neightbor in neighbors if G.nodes[neightbor].get('type', 'unknown') == 'subject'])}\n"
 
         elif node_type == 'subject':
             teachers = [n for n in neighbors if G.nodes[n].get('type') == 'teacher']
