@@ -165,9 +165,7 @@ def rerank(query, documents, batch_size=16):
     return ranked_indexes
 
 
-
-
-def reRankingRetriever_local(query, retriever, history):
+def rephrase_query(query, history):
     print(f"Original Query: {query}\n\n")
     rephrase_prompt_format = rephrase_prompt.format(history=history, query=query)
     rephraseResponse = chatModel.create_chat_completion(messages=[{"role": "system", "content": rephrase_prompt_format}])
@@ -176,6 +174,20 @@ def reRankingRetriever_local(query, retriever, history):
     if match:
         query = match.group(1)
     print(f"Rephrased Query: {query}\n\n")
+    return query
+
+
+def split_query(query):
+    split_prompt_format = split_prompt.format(question=query)
+    splitResponse = chatModel.create_chat_completion(messages=[{"role": "system", "content": split_prompt_format}])
+    print(splitResponse['choices'][0]['message']['content'])
+    questions = re.findall(r'<(.*?)>', (splitResponse['choices'][0]['message']['content']))
+    if len(questions) == 0 or not questions:
+        return [query]
+    else:
+        return questions
+
+def reRankingRetriever_local(query, retriever):
     retrieved_documents = retriever.invoke(query)
     documents = [doc.page_content if hasattr(doc, "page_content") else str(doc) for doc in retrieved_documents]
 
@@ -184,16 +196,21 @@ def reRankingRetriever_local(query, retriever, history):
     ranked_indexes = ranked_indexes[:5]
     filtered_documents = [retrieved_documents[i] for i in ranked_indexes]
 
-    return filtered_documents, query
+    return filtered_documents
 
 
 
-def query_model(question, docs, chatModel, history):
-    formatted_docs = "\n".join([f"\n\t{i+1} - {doc.page_content}" for i, doc in enumerate(docs)])
+def query_model(question, docs, chatModel, history, show_prompt=True, docs_need_format = True):
+    if docs_need_format:
+        formatted_docs = "\n".join([f"\n\t{i+1} - {doc.page_content}" for i, doc in enumerate(docs)])
+    else:
+        formatted_docs = docs
     prompt_text = rag_prompt.format(question=question, context=formatted_docs, history=history) 
-    print(prompt_text)
+    if show_prompt:
+        print(prompt_text)
     response = chatModel.create_chat_completion(messages=[{"role": "user", "content": prompt_text}])
-    print(response['choices'][0]['message']['content'])
+    if show_prompt:
+        print(response['choices'][0]['message']['content'])
 
     return response['choices'][0]['message']['content']
 
@@ -321,13 +338,35 @@ class ChatRequest(BaseModel):
 @app.post("/chat")
 async def run_chat(request: ChatRequest):
     try:
+        start=time.perf_counter()
         message , history = request.message, request.history
-        history = format_history(history)
-        documents, newQuestion = reRankingRetriever_local(message, retriever, history)
-        generated_answer = query_model(newQuestion, documents, chatModel, history)
+        history = format_history(history) #make history more understandable
+        newQuestion = rephrase_query(message, history) #used to create new query according to the history of the conversation
+        questions = split_query(newQuestion) #used to split the question into two or more questions
+        questions = questions[:5] #used to limit the number of questions to 5
+        print(questions)
 
+        if len(questions) == 1:
+            documents = reRankingRetriever_local(newQuestion, retriever) ##used to retrieve the documents from the vector store
+            generated_answer = query_model(newQuestion, documents, chatModel, history)
+            end = time.perf_counter()
+            torch.cuda.empty_cache()
+            gc.collect()
+            print(f"Time to run query: {end - start}")
+            return {"message": generated_answer}
+            
+        answers_list = []
+        for question in questions:
+            documents = reRankingRetriever_local(question, retriever) ##used to retrieve the documents from the vector store
+            temp_generated_answer = query_model(question, documents, chatModel, history, False) ##used to generate the answer from the chat model 
+            answers_list.append(temp_generated_answer)  
+        context = "\n".join(answers_list) #used to create the context of the question
+        generated_answer = query_model(question=newQuestion,chatModel=chatModel,docs=context,history=history, show_prompt = True, docs_need_format=False) #used to join the answers into one answer
+       
         torch.cuda.empty_cache()
         gc.collect()
+        end = time.perf_counter()
+        print(f"Time to run query: {end - start}")
         return {"message": generated_answer}
     except Exception as e:
         print(f"ERROR in /chat: {str(e)}", file=sys.stderr)
@@ -544,11 +583,11 @@ if __name__ == "__main__":
 - **Αναμενόμενη έξοδος:** `"Πόσο διαρκεί το πρόγραμμα Erasmus+;"` 
 
 ### Παράδειγμα 7
-- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποια είναι η διαδικασία δήλωσης μαθημάτων;
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποια είναι τα μαθήματα του πρώτου εξαμήνου;
 
-                 - Προηγούμενη Απάντησή σου: Η διαδικασία δήλωσης μαθημάτων περιλαμβάνει την υποβολή αίτησης." 
-- **Τελευταία ερώτηση:** "Μέχρι πότε μπορώ να δηλώσω;"  
-- **Αναμενόμενη έξοδος:** `"Μέχρι πότε μπορώ να δηλώσω μαθήματα;"` 
+                 - Προηγούμενη Απάντησή σου: Τα μαθήματα του πρώτου εξαμήνου  είναι: Υπολογιστικά Μαθηματικά, Ψηφιακή Τεχνολογία και Εφαρμογές Τηλεματικής, Προγραμματισμός Ι, Λογική Σχεδίαση, Διακριτά Μαθηματικά." 
+- **Τελευταία ερώτηση:** "Ποιος διδάσκει το καθένα από αυτά;"  
+- **Αναμενόμενη έξοδος:** `"Ποιος διδάσκει τα μαθήματα Υπολογιστικά Μαθηματικά, Ψηφιακή Τεχνολογία και Εφαρμογές Τηλεματικής, Προγραμματισμός Ι, Λογική Σχεδίαση, Διακριτά Μαθηματικά;"` 
 
 ### Παράδειγμα 8
 - **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποιος είναι ο καθηγητής του μαθήματος Β;
@@ -599,6 +638,11 @@ if __name__ == "__main__":
 - **Τελευταία ερώτηση:** "Ποια μαθήματα έχει ο κ. Ριζομυλιώτης;"  
 - **Αναμενόμενη έξοδος:** `"Ποια μαθήματα διδάσκει ο Β;"` 
 
+### Παράδειγμα 15
+- **Ιστορικό:** (κενό)
+- **Τελευταία ερώτηση:** "Ποια είναι τα μαθήματα του πρώτου έτους;"  
+- **Αναμενόμενη έξοδος:** `"Ποια είναι τα μαθήματα του πρώτου έτους;"`
+
 Ιστορικό Συνομιλίας: {history}  
 Τελευταία ερώτηση: {query}  
 
@@ -611,9 +655,152 @@ if __name__ == "__main__":
     )
 
 
+
+
+
+    split_template = """Είσαι ένας αυστηρός επεξεργαστής ερωτήσεων που λαμβάνει μία σύνθετη ερώτηση και την αναλύει σε ανεξάρτητα, αυτόνομα ερωτήματα. Ο στόχος σου είναι να διασφαλίσεις ότι κάθε ερώτηση αφορά **ένα μόνο αντικείμενο** και δεν περιέχει **πολλαπλά ζητούμενα** στην ίδια πρόταση.
+
+## **Κανόνες Διάσπασης Ερωτήσεων**:
+1. **Απαγορεύεται** να επιστρέψεις μία ερώτηση που περιλαμβάνει περισσότερα από ένα ξεχωριστά αντικείμενα ή έννοιες.
+2. Αν η αρχική ερώτηση περιέχει περισσότερα από ένα ζητούμενα (π.χ., "Ποιος διδάσκει Τεχνητή Νοημοσύνη και Διακριτά Μαθηματικά;"), τότε **πρέπει** να τη χωρίσεις σε **δύο ή περισσότερες** ερωτήσεις, καθεμία με **ένα μόνο ζητούμενο**.
+3. Οι νέες ερωτήσεις πρέπει να είναι **αυτοτελείς** και να **διατηρούν το νόημα** της αρχικής ερώτησης.
+4. Δεν επιτρέπεται καμία αυθαίρετη αλλαγή ή αφαίρεση πληροφορίας από την αρχική ερώτηση.
+5. Πρέπει να τηρείται **σαφής και φυσική διατύπωση** στις νέες ερωτήσεις, χωρίς ασαφείς αναφορές (π.χ., **όχι** "Και το άλλο;").
+6. Αν η ερώτηση είναι ήδη **απλή και αυτοτελής**, την επιστρέφεις **ως έχει** χωρίς τροποποίηση.
+8. Ο όρος **"Πληροφορική και Τηλεματική" είναι ένας όρος** και δεν πρέπει να διασπαστεί.
+7. **Κάθε νέα ερώτηση ΠΡΕΠΕΙ να είναι σε αυστηρή μορφή: <Νέα Ερώτηση 1> <Νέα Ερώτηση 2> ...**  
+   - **Απαγορεύεται οποιαδήποτε άλλη μορφή.**
+   - **Οι απαντήσεις πρέπει να είναι αποκλειστικά μέσα σε γωνιακές αγκύλες (`< >`).**
+   - **Καμία πρόσθετη πληροφορία ή εξήγηση δεν επιτρέπεται.** 
+   - **Οποιαδήποτε άλλη μορφή θα θεωρείται ΛΑΘΟΣ** 
+
+---
+
+## **Παραδείγματα Διάσπασης**:
+
+### Παράδειγμα 1:
+**Είσοδος:**  
+*"Ποιος διδάσκει Τεχνητή Νοημοσύνη και Διακριτά Μαθηματικά;"*
+
+**Έξοδος:**  
+`<Ποιος διδάσκει Τεχνητή Νοημοσύνη;> <Ποιος διδάσκει Διακριτά Μαθηματικά;>`
+
+---
+
+### Παράδειγμα 2:
+**Είσοδος:**  
+*"Ποια είναι τα υποχρεωτικά μαθήματα του 3ου και του 5ου εξαμήνου;"*
+
+**Έξοδος:**  
+`<Ποια είναι τα υποχρεωτικά μαθήματα του 3ου εξαμήνου;> <Ποια είναι τα υποχρεωτικά μαθήματα του 5ου εξαμήνου;>`
+
+---
+
+### Παράδειγμα 3:
+**Είσοδος:**  
+*"Ποιος είναι ο καθηγητής του μαθήματος Β και πού μπορώ να βρω το υλικό του;"*
+
+**Έξοδος:**  
+`<Ποιος είναι ο καθηγητής του μαθήματος Β;> <Πού μπορώ να βρω το υλικό του μαθήματος Β;>`
+
+---
+
+### Παράδειγμα 4:
+**Είσοδος:**  
+*"Ποιες είναι οι προϋποθέσεις για το μάθημα Α και το μάθημα Β;"*
+
+**Έξοδος:**  
+`<Ποιες είναι οι προϋποθέσεις για το μάθημα Α;> <Ποιες είναι οι προϋποθέσεις για το μάθημα Β;>`
+
+---
+
+### Παράδειγμα 5:
+**Είσοδος:**  
+*"Ποιο είναι το πρόγραμμα μαθημάτων του 3ου και του 4ου εξαμήνου;"*
+
+**Έξοδος:**  
+`<Ποιο είναι το πρόγραμμα μαθημάτων του 3ου εξαμήνου;> <Ποιο είναι το πρόγραμμα μαθημάτων του 4ου εξαμήνου;>`
+
+---
+
+### Παράδειγμα 6:
+**Είσοδος:**  
+*"Πόσες πιστωτικές μονάδες απαιτούνται για το πτυχίο;"*
+
+**Έξοδος:**  
+`<Πόσες πιστωτικές μονάδες απαιτούνται για το πτυχίο;>`  
+
+(Δεν χωρίζεται γιατί έχει **ένα** μόνο ζητούμενο.)
+
+---
+
+### Παράδειγμα 7:
+**Είσοδος:**  
+*"Ποιος διδάσκει τα μαθήματα Προγραμματισμός Ι, Διακριτά Μαθηματικά, Λογική Σχεδίαση, Ψηφιακή Τεχνολογία και Εφαρμογές Τηλεματικής, Υπολογιστικά Μαθηματικά;"*
+
+**Έξοδος:**  
+`<Ποιος διδάσκει το μάθημα Προγραμματισμός Ι> <Ποιος διδάσκει το μάθημα Διακριτά Μαθηματικά;> <Ποιος διδάσκει το μάθημα Λογική Σχεδίαση> <Ποιος διδάσκει το μάθημα Ψηφιακή Τεχνολογία και Εφαρμογές Τηλεματικής> <Ποιος διδάσκει το μάθημα Υπολογιστικά Μαθηματικά;>`
+
+---
+
+### Παράδειγμα 8:
+**Είσοδος:**  
+*"Ποιες είναι οι προϋποθέσεις για την απόκτηση πτυχίου;"*
+
+**Έξοδος:**  
+`<Ποιες είναι οι προϋποθέσεις για την απόκτηση πτυχίου;>`  
+
+(Δεν χωρίζεται γιατί έχει **ένα** μόνο ζητούμενο.)
+
+---
+
+### Παράδειγμα 9:
+**Είσοδος:**  
+*"Ποια είναι τα μαθήματα του πρώτου έτους;"*
+
+**Έξοδος:**  
+`<Ποια είναι τα μαθήματα του πρώτου έτους;>`  
+
+(Δεν χωρίζεται γιατί έχει **ένα** μόνο ζητούμενο.)
+
+---
+
+### Παράδειγμα 9:
+**Είσοδος:**  
+*"Ποιος είναι ο κοσμήτορας του τμήματος Πληροφορικής και Τηλεματικής;"*
+
+**Έξοδος:**  
+`<Ποιος είναι ο κοσμήτορας του τμήματος Πληροφορικής και Τηλεματικής;>`  
+
+(Δεν χωρίζεται γιατί η πληροφορική και τηλεματική είναι **ένας** όρος.)
+
+---
+
+### Παράδειγμα 10:
+**Είσοδος:**  
+*"Που βρισκεται το τμημα πληροφορικης και τηλεματικης "*
+
+**Έξοδος:**  
+`<που βρισκεται το τμημα πληροφορικης και τηλεματικης >`  
+
+(Δεν χωρίζεται γιατί η πληροφορική και τηλεματική είναι **ένας** όρος.)
+
+---
+
+**Αρχική Ερώτηση:**  
+{question}  
+
+**Αναλυμένες Ερωτήσεις:**  
+
+"""
+
+    split_prompt = PromptTemplate(
+        input_variables=["question"],
+        template=split_template
+    )
+
+    
     print(f"Loaded chat model")
-
-
 
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=9090)
