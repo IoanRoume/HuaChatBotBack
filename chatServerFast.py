@@ -75,7 +75,80 @@ class MarkdownTitleTextSplitter(TextSplitter):
 
         return sections
 
+def make_documents_fromGraph(graph_nodes):
+        global graph_results
+        for node in graph_nodes:
+            neighbors = list(G.neighbors(node))
+            node_type = G.nodes[node].get('type', 'unknown')
+            if node_type == 'teacher':
+                result = f"Ο διδάσκοντας {node} έχει τα μαθήματα: -" + '\n-  '.join([
+                f"{neighbor} ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'year']}), ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'semester']}) - {[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'decision']}"
+                for neighbor in neighbors if G.nodes[neighbor].get('type', 'unknown') == 'subject'
+                ]) + "\n"
 
+            elif node_type == 'subject':
+                teachers = [n for n in neighbors if G.nodes[n].get('type') == 'teacher']
+                rooms = [n for n in neighbors if G.nodes[n].get('type') == 'location']
+                days = [n for n in neighbors if G.nodes[n].get('type') == 'day']
+                semesters = [n for n in neighbors if G.nodes[n].get('type') == 'semester']
+                years = [n for n in neighbors if G.nodes[n].get('type') == 'year']
+                decision = [n for n in neighbors if G.nodes[n].get('type') == 'decision']
+
+                teacher_text = f"Διδάσκεται από: {', '.join(teachers)}" if teachers else ""
+                room_text = f"Στην αίθουσα: {', '.join(rooms)}" if rooms else ""
+                days_text = f"Στις ημέρες: {', '.join(days)}" if days else ""
+                semester_text = f"Στο {', '.join(semesters)}" if semesters else ""
+                year_text = f"Στο {', '.join(years)}" if years else ""
+                decision_text = f"Το μάθημα είναι : {''.join(decision)}"
+
+                result = f"Το μάθημα {node}, {teacher_text}, {room_text}, {days_text}, {semester_text}, {year_text}, {decision_text}".strip() + "\n"
+
+            elif node_type == 'location':
+                result = f"Η Αίθουσα {node} έχει τα μαθήματα: -"+ '\n-  '.join([
+                f"{neighbor} ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'year']}), ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'semester']}) - {[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'decision']}"
+                for neighbor in neighbors if G.nodes[neighbor].get('type', 'unknown') == 'subject'
+                ]) + "\n"
+
+            elif node_type == 'day':
+                result = f"Στην ημέρα {node} διεξάγονται τα μαθήματα: -"+'\n-  '.join([
+                f"{neighbor} ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'year']}), ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'semester']}) - {[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'decision']}"
+                for neighbor in neighbors if G.nodes[neighbor].get('type', 'unknown') == 'subject'
+                ]) + "\n"
+            elif node_type == 'faculty':
+                result = f"Οι {node} του τμήματος Πληροφορικής και τηλεματικής είναι: {', '.join(neighbors)}\n"
+            elif node_type == 'career_op':
+                result = f"Για να εξελιχθείς, να ειδικευτείς ή και να ασχοληθείς ως {node}, τα κατάλληλα μαθήματα που θα σε προετοιμάσουν καλύτερα είναι: -"+'\n-  '.join([
+                f"{neighbor} ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'year']}), ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'semester']}) - {[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'decision']}"
+                for neighbor in neighbors if G.nodes[neighbor].get('type', 'unknown') == 'subject'
+                ]) + "\n"
+            elif node_type == 'decision':
+                result = f"Τα μαθήματα που είναι {node}, στο τμήμα Πληροφορικής και Τηλεματικής είναι: -"+'\n-  '.join([
+                f"{neighbor} ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'year']}), ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'semester']})"
+                for neighbor in neighbors if G.nodes[neighbor].get('type', 'unknown') == 'subject'
+                ]) + "\n"
+            elif node_type == 'secretary':
+                staff = []
+                email = []
+                phone = []
+                for neightbor in neighbors:
+                    neighbor_type = G.nodes[neightbor]['type']
+
+                    if neighbor_type == "secretary_staff":
+                        staff.append(neightbor)
+                    if neighbor_type == "secretary_email":
+                        email.append(neightbor)
+                    if neighbor_type == "secretary_phone":
+                        phone.append(neightbor)
+                    staff_text = f"{', '.join(staff)}"
+
+                result = f"Το προσωπικό της {node} του τμήματος Πληροφορικής και τηλεματικής είναι: {', '.join(staff)}\n"
+                graph_results.append(result)
+                result = f"Το Εmail της {node} του τμήματος Πληροφορικής και τηλεματικής είναι: {', '.join(email)}, και το Τηλέφωνο της {node} είναι: {', '.join(phone)}\n"
+
+            else:
+                result = f"To {node} περιλαμβάνει τα μαθήματα: {', '.join(neighbors)}\n"
+
+            graph_results.append(result)
 
 def rerank(query, documents, batch_size=16):
     pairs = [(query, doc) for doc in documents]
@@ -218,6 +291,27 @@ def get_next_id():
 
     return new_id
 
+def format_history(chat_history):
+
+    if len(chat_history) < 2:
+        return ""  #Αν δεν υπάρχει προηγούμενη απάντηση, δεν προσθέτουμε ιστορικό
+
+    last_user_question = None
+    last_bot_answer = None
+
+    #Διατρέχουμε το ιστορικό από το τέλος προς την αρχή
+    for entry in reversed(chat_history):
+        if entry["role"] == "bot" and last_bot_answer is None:
+            last_bot_answer = entry["content"]
+        elif entry["role"] == "user" and last_user_question is None:
+            last_user_question = entry["content"]
+            break  #Μόλις βρούμε και τα δύο, σταματάμε
+
+    if last_user_question and last_bot_answer:
+        return f"- Προηγούμενη Ερώτηση από χρήστη: {last_user_question}\n\n- Προηγούμενη Απάντησή σου: {last_bot_answer}"
+
+    return ""
+
 
 from typing import List, Dict
 class ChatRequest(BaseModel):
@@ -228,6 +322,7 @@ class ChatRequest(BaseModel):
 async def run_chat(request: ChatRequest):
     try:
         message , history = request.message, request.history
+        history = format_history(history)
         documents, newQuestion = reRankingRetriever_local(message, retriever, history)
         generated_answer = query_model(newQuestion, documents, chatModel, history)
 
@@ -322,64 +417,7 @@ if __name__ == "__main__":
     #Process Graph and add information to the VectorStore
     graph_nodes = [n for n in G.nodes()]
     graph_results = []
-    for node in graph_nodes:
-        neighbors = list(G.neighbors(node))
-        node_type = G.nodes[node].get('type', 'unknown')
-        if node_type == 'teacher':
-            result = f"Ο διδάσκοντας {node} έχει τα μαθήματα: {', '.join([neightbor for neightbor in neighbors if G.nodes[neightbor].get('type', 'unknown') == 'subject'])}\n"
-
-        elif node_type == 'subject':
-            teachers = [n for n in neighbors if G.nodes[n].get('type') == 'teacher']
-            rooms = [n for n in neighbors if G.nodes[n].get('type') == 'location']
-            days = [n for n in neighbors if G.nodes[n].get('type') == 'day']
-            semesters = [n for n in neighbors if G.nodes[n].get('type') == 'semester']
-            years = [n for n in neighbors if G.nodes[n].get('type') == 'year']
-            decision = [n for n in neighbors if G.nodes[n].get('type') == 'decision']
-
-            teacher_text = f"Διδάσκεται από: {', '.join(teachers)}" if teachers else ""
-            room_text = f"Στην αίθουσα: {', '.join(rooms)}" if rooms else ""
-            days_text = f"Στις ημέρες: {', '.join(days)}" if days else ""
-            semester_text = f"Στο {', '.join(semesters)}" if semesters else ""
-            year_text = f"Στο {', '.join(years)}" if years else ""
-            decision_text = f"Το μάθημα είναι : {''.join(decision)}"
-
-            result = f"Το μάθημα {node}, {teacher_text}, {room_text}, {days_text}, {semester_text}, {year_text}, {decision_text}".strip() + "\n"
-
-        elif node_type == 'location':
-            result = f"Η Αίθουσα {node} έχει τα μαθήματα: {', '.join(neighbors)}\n"
-
-        elif node_type == 'day':
-            result = f"Στην ημέρα {node} διεξάγονται τα μαθήματα: {', '.join(neighbors)}\n"
-        elif node_type == 'faculty':
-              result = f"Οι {node} του τμήματος Πληροφορικής και τηλεματικής είναι: {', '.join(neighbors)}\n"
-        elif node_type == 'career_op':
-              result = f"Για να εξελιχθείς ή να ειδικευτείς ως {node}, τα κατάλληλα μαθήματα που θα σε προετοιμάσουν καλύτερα είναι: {', '.join(neighbors)}.\n"
-        elif node_type == 'decision':
-              result = f"Τα μαθήματα που είναι {node}, στο τμήμα Πληροφορικής και Τηλεματικής είναι: {', '.join(neighbors)}.\n"
-        elif node_type == 'secretary':
-              staff = []
-              email = []
-              phone = []
-              for neightbor in neighbors:
-                neighbor_type = G.nodes[neightbor]['type']
-
-                if neighbor_type == "secretary_staff":
-                  staff.append(neightbor)
-                if neighbor_type == "secretary_email":
-                  email.append(neightbor)
-                if neighbor_type == "secretary_phone":
-                  phone.append(neightbor)
-                staff_text = f"{', '.join(staff)}"
-
-              result = f"Το προσωπικό της {node} του τμήματος Πληροφορικής και τηλεματικής είναι: {', '.join(staff)}\n"
-              graph_results.append(result)
-              result = f"Το Εmail της {node} του τμήματος Πληροφορικής και τηλεματικής είναι: {', '.join(email)}, και το Τηλέφωνο της {node} είναι: {', '.join(phone)}\n"
-
-        else:
-            result = f"To {node} περιλαμβάνει τα μαθήματα: {', '.join(neighbors)}\n"
-
-        graph_results.append(result)
-
+    make_documents_fromGraph(graph_nodes)
     graph_documents = [Document(page_content=result) for result in graph_results]
     vectordb.add_documents(graph_documents)
     retriever = vectordb.as_retriever(search_kwargs={"k": 40})  
@@ -400,28 +438,50 @@ if __name__ == "__main__":
     print(f"Loading chat model")
     repo_id_chat_model = "bartowski/ilsp_Llama-Krikri-8B-Instruct-GGUF"
 
-    filename_chat_model = "ilsp_Llama-Krikri-8B-Instruct-Q4_K_M.gguf"
+    filename_chat_model = "ilsp_Llama-Krikri-8B-Instruct-Q6_K.gguf"
 
     chatModel = Llama.from_pretrained(repo_id=repo_id_chat_model, filename=filename_chat_model, n_ctx=8192, n_gpu_layers=-1)  
-    #chatModel = None
 
     template = """
-    Είσαι ένας έξυπνος βοηθός που απαντά σε ερωτήσεις βασισμένος σε πληροφορίες από τη βάση γνώσεων του Χαροκοπείου Πανεπιστημίου, τμήμα Πληροφορικής Και Τηλεματικής. 
-    Απάντησε στην παρακάτω ερώτηση με σαφήνεια και ακρίβεια χρησιμοποιώντας τα παρεχόμενα αποσπάσματα από τη βάση γνώσεων. 
-    Αν δεν γνωρίζεις την απάντηση, πες ότι δεν είσαι σίγουρος αντί να δώσεις λανθασμένη πληροφορία.
-    Αν η ερώτηση είναι εκτός θέματος, απαντάς ευγενικά ότι δεν διαθέτεις τις σχετικές πληροφορίες.
-    Αν η ερώτηση είναι στα Αγγλικά τότε πρέπει και εσύ να απαντήσεις στα Αγγλικά, αν είναι στα Ελληνικά τότε πρέπει να απαντήσεις στα Ελληνικά.
-    Πρέπει να διαβάζεις προσεκτικά το περιεχόμενο της ερώτησης για να καταλάβεις τι ζητείται.
-    Δεν πρέπει να δίνεις πληροφορίες που δεν ζητήθηκαν.
+Είσαι ένας έξυπνος βοηθός που απαντά σε ερωτήσεις βασισμένος **μόνο** σε πληροφορίες από τη βάση γνώσεων του Χαροκοπείου Πανεπιστημίου, Τμήμα Πληροφορικής και Τηλεματικής.
 
-    Ιστορικό Συνομιλίας: {history}
+## **Κανόνες απάντησης**:
+- **Απαγορεύεται** να απαντάς βασιζόμενος αποκλειστικά στο ιστορικό συνομιλίας.
+- Το ιστορικό συνομιλίας υπάρχει **μόνο** για να σε βοηθήσει να κατανοήσεις το πλαίσιο της νέας ερώτησης, **όχι** για να αντλήσεις απαντήσεις από αυτό.
+- Πρέπει να απαντάς **αποκλειστικά** χρησιμοποιώντας τις παρεχόμενες πληροφορίες από τη βάση γνώσεων.
+- Αν η βάση γνώσεων δεν περιέχει την απάντηση, απαντάς: **"Δεν είμαι σίγουρος. Για περισσότερες πληροφορίες, μπορείτε να επικοινωνήσετε με τη γραμματεία του τμήματος."**  
+- Αν η ερώτηση είναι εκτός θέματος, απαντάς: **"Δεν διαθέτω πληροφορίες για αυτό το ζήτημα."**  
+- Αν η ερώτηση είναι στα Αγγλικά, απαντάς στα Αγγλικά. Αν είναι στα Ελληνικά, απαντάς στα Ελληνικά.
+- Πρέπει να διαβάζεις **προσεκτικά** το περιεχόμενο της ερώτησης ώστε να απαντήσεις **ακριβώς** σε αυτό που ζητείται, χωρίς περιττές πληροφορίες ή αυθαίρετες ερμηνείες.
+- Αν η ερώτηση δεν αναφέρεται σε πληροφορίες της βάσης γνώσεων, πρέπει να παραμείνεις αμέτοχος και να μην προσπαθήσεις να δώσεις δική σου εκτίμηση ή εικασία.
+- **Καμία υπόθεση δεν επιτρέπεται.** Αν δεν υπάρχει επαρκές περιεχόμενο στην βάση γνώσεων για να απαντήσεις, πρέπει να παραμείνεις ακριβής και να πεις ότι δεν έχεις την πληροφορία.
+- **Δεν πρέπει να απαντάς με τρόπο που υποδηλώνει ότι διαβάζεις ή επεξεργάζεσαι περιεχόμενο από την βάση γνώσεων.** Οι απαντήσεις πρέπει να φαίνονται φυσικές και να μην δημιουργούν την εντύπωση ότι ανακτάς ή αντιγράφεις ακριβώς πληροφορίες από μια βάση δεδομένων ή άλλο έγγραφο.
+- Όταν αναφέρεσαι σε πληροφορίες, **πρέπει να τις ενσωματώνεις φυσικά** χωρίς να φανερώνεις την προέλευση της πληροφορίας, ώστε να μη δημιουργείται η αίσθηση ότι προέρχεται από εξωτερική πηγή.
 
-    Νέα Ερώτηση: {question}
+## **Παραδείγματα για κατανόηση**:
+    **Παράδειγμα 1:**  
+    - **Ιστορικό:** "Ποιος είναι ο καθηγητής του μαθήματος Α;"
+    - **Νέα Ερώτηση:** "Ποια μαθήματα περιλαμβάνει το 1ο Έτος;"
+    - **Πληροφορίες από τη βάση γνώσεων:** "To Πρώτο Έτος περιλαμβάνει τα μαθήματα: Προγραμματισμός ΙΙ, Αριθμητική Ανάλυση, Αντικειμενοστρεφής Προγραμματισμός Ι, Πιθανότητες, Αρχιτεκτονική Υπολογιστών, Προγραμματισμός Ι, Διακριτά Μαθηματικά, Λογική Σχεδίαση, Ψηφιακή Τεχνολογία και Εφαρμογές Τηλεματικής, Υπολογιστικά Μαθηματικά"
+    - **Αναμενόμενη απάντηση:**  
+        "Τα μαθήματα του 1ου Έτους περιλαμβάνουν: [λίστα μαθημάτων]."
 
-    Πληροφορίες από τη βάση γνώσεων:
+     **Παράδειγμα 2:**  
+    - **Ιστορικό:** (κενό)
+    - **Νέα Ερώτηση:** "Ποια μαθήματα έχει Ο ο καθηγητής Α;"
+    - **Πληροφορίες από τη βάση γνώσεων:** "1- Μάθημα1 επιλογής διδάσκεται από τον Α, 2- Μάθημα2 υποχρεωτικό διδάσκεται από τον Α, 3- Ο καθηγητής Α διδάσκει το μάθημα1,μάθημα2, μάθημα3"
+    - **Αναμενόμενη απάντηση:**  
+        "Ο Α διδάσκει τα μαθήματα: Μάθημα1 (επιλογής), μάθημα2 (υποχρεωτικό), μάθημα3."
+---
+
+**Ιστορικό Συνομιλίας (Μόνο για κατανόηση, όχι για απαντήσεις):**  
+{history}
+
+**Νέα Ερώτηση:**  
+{question}
+
+**Πληροφορίες από τη βάση γνώσεων:**  
 {context}
-
-    Απάντηση:
     """
 
     rag_prompt = PromptTemplate(
@@ -444,7 +504,9 @@ if __name__ == "__main__":
 
 ## **Παραδείγματα**  
 ### Παράδειγμα 1  
-- **Ιστορικό:** "Ποιος είναι ο A;"  
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποιος είναι ο A;
+
+                 - Προηγούμενη Απάντησή σου: Ο A είναι καθηγητής στο τμήμα Πληροφορικής. "  
 - **Τελευταία ερώτηση:** "Πού βρίσκεται το γραφείο του;"  
 - **Αναμενόμενη έξοδος:** `"Πού βρίσκεται το γραφείο του A;"`  
 
@@ -454,9 +516,88 @@ if __name__ == "__main__":
 - **Αναμενόμενη έξοδος:** `"Ποια μαθήματα διδάσκει ο B;"`  
 
 ### Παράδειγμα 3  
-- **Ιστορικό:** "Ποιος είναι ο A;" 
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποιος είναι ο A;
+
+                 - Προηγούμενη Απάντησή σου: Ο A είναι καθηγητής στο τμήμα Πληροφορικής. "  
 - **Τελευταία ερώτηση:** "Ποια είναι τα μαθήματα του Τέταρτου Έτους;"  
-- **Αναμενόμενη έξοδος:** `"Ποια είναι τα μαθήματα του Τέταρτου Έτους;"`  
+- **Αναμενόμενη έξοδος:** `"Ποια είναι τα μαθήματα του Τέταρτου Έτους;"`
+
+### Παράδειγμα 4
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Πόσες πιστωτικές μονάδες χρειάζονται για το πτυχίο;
+
+                 - Προηγούμενη Απάντησή σου: Για το πτυχίο απαιτούνται 240 πιστωτικές μονάδες." 
+- **Τελευταία ερώτηση:** "Πόσα μαθήματα πρέπει να επιλέξω στο 5ο εξάμηνο;"  
+- **Αναμενόμενη έξοδος:** `"Πόσα μαθήματα πρέπει να επιλέξω στο 5ο εξάμηνο;"`  
+
+### Παράδειγμα 5
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποια είναι τα υποχρεωτικά μαθήματα του 3ου εξαμήνου;
+
+                 - Προηγούμενη Απάντησή σου: Τα υποχρεωτικά μαθήματα του 3ου εξαμήνου είναι το Α και το Β." 
+- **Τελευταία ερώτηση:** "Υπάρχουν προαπαιτούμενα;"  
+- **Αναμενόμενη έξοδος:** `"Υπάρχουν προαπαιτούμενα για τα υποχρεωτικά μαθήματα του 3ου εξαμήνου;"` 
+
+### Παράδειγμα 6
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Τι είναι το Erasmus+ και πώς μπορώ να συμμετάσχω;
+
+                 - Προηγούμενη Απάντησή σου: Το Erasmus+ είναι ένα πρόγραμμα ανταλλαγής φοιτητών." 
+- **Τελευταία ερώτηση:** "Πόσο διαρκεί;"  
+- **Αναμενόμενη έξοδος:** `"Πόσο διαρκεί το πρόγραμμα Erasmus+;"` 
+
+### Παράδειγμα 7
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποια είναι η διαδικασία δήλωσης μαθημάτων;
+
+                 - Προηγούμενη Απάντησή σου: Η διαδικασία δήλωσης μαθημάτων περιλαμβάνει την υποβολή αίτησης." 
+- **Τελευταία ερώτηση:** "Μέχρι πότε μπορώ να δηλώσω;"  
+- **Αναμενόμενη έξοδος:** `"Μέχρι πότε μπορώ να δηλώσω μαθήματα;"` 
+
+### Παράδειγμα 8
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποιος είναι ο καθηγητής του μαθήματος Β;
+
+                 - Προηγούμενη Απάντησή σου: Ο καθηγητής του μαθήματος Β είναι ο Γ." 
+- **Τελευταία ερώτηση:** "Πού μπορώ να βρω το υλικό του;"  
+- **Αναμενόμενη έξοδος:** `"Πού μπορώ να βρω το υλικό του μαθήματος Β;"` 
+
+### Παράδειγμα 9
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Πώς μπορώ να πάρω απαλλαγή από ένα μάθημα;
+
+                 - Προηγούμενη Απάντησή σου: Για απαλλαγή από ένα μάθημα, πρέπει να υποβάλεις αίτηση." 
+- **Τελευταία ερώτηση:** "Τι ισχύει για τα εργαστήρια;"  
+- **Αναμενόμενη έξοδος:** `"Τι ισχύει για τα εργαστήρια;"` 
+
+### Παράδειγμα 10
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποια είναι τα υποχρεωτικά μαθήματα στο 3ο εξάμηνο;
+
+                 - Προηγούμενη Απάντησή σου: Τα υποχρεωτικά μαθήματα στο 3ο εξάμηνο είναι το Α και το Β." 
+- **Τελευταία ερώτηση:** "Και στο 5ο;"  
+- **Αναμενόμενη έξοδος:** `"Ποια είναι τα υποχρεωτικά μαθήματα στο 5ο εξάμηνο;"` 
+
+### Παράδειγμα 11
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Πόσες ώρες πρέπει να αφιερώνω για τα μαθήματα κάθε εβδομάδα;
+
+                 - Προηγούμενη Απάντησή σου: Ο μέσος όρος είναι περίπου 25-30 ώρες την εβδομάδα για το πλήρες πρόγραμμα σπουδών." 
+- **Τελευταία ερώτηση:** "Πόσες ώρες είναι για το 3ο εξάμηνο;"  
+- **Αναμενόμενη έξοδος:** `"Πόσες ώρες πρέπει να αφιερώνω για το 3ο εξάμηνο;"` 
+
+### Παράδειγμα 12
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποιος είναι ο επικεφαλής του τμήματος Πληροφορικής;
+
+                 - Προηγούμενη Απάντησή σου: Ο επικεφαλής του τμήματος είναι ο Α" 
+- **Τελευταία ερώτηση:** "Ποια είναι τα μαθήματα του τμήματος;"  
+- **Αναμενόμενη έξοδος:** `"Ποια είναι τα μαθήματα του τμήματος Πληροφορικής;"` 
+
+### Παράδειγμα 13
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποια είναι τα μαθήματα του 1ου εξαμήνου
+
+                 - Προηγούμενη Απάντησή σου: Τα μαθήματα του 1ου εξαμήνου είναι 1. Α, 2. Β, 3. Γ, 4. Δ. , 5. Ε." 
+- **Τελευταία ερώτηση:** "Πες μου πληροφορίες για το 3"  
+- **Αναμενόμενη έξοδος:** `"Πες μου πληροφορίες για το μάθημα Γ."` 
+
+### Παράδειγμα 14
+- **Ιστορικό:** "- Προηγούμενη Ερώτηση από χρήστη: Ποια μαθήματα διδάσκει ο κ. Κουσιουρής;
+
+                 - Προηγούμενη Απάντησή σου: Τα μαθήματα του καθηγητή κ. Κουσιουρής είναι 1. Α, 2. Β." 
+- **Τελευταία ερώτηση:** "Ποια μαθήματα έχει ο κ. Ριζομυλιώτης;"  
+- **Αναμενόμενη έξοδος:** `"Ποια μαθήματα διδάσκει ο Β;"` 
 
 Ιστορικό Συνομιλίας: {history}  
 Τελευταία ερώτηση: {query}  
