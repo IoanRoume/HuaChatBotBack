@@ -115,7 +115,7 @@ def make_documents_fromGraph(graph_nodes):
                 for neighbor in neighbors if G.nodes[neighbor].get('type', 'unknown') == 'subject'
                 ]) + "\n"
             elif node_type == 'faculty':
-                result = f"Οι {node} του τμήματος Πληροφορικής και τηλεματικής είναι: {', '.join(neighbors)}\n"
+                result = f"Οι {node} του τμήματος Πληροφορικής και τηλεματικής του Προπτυχιακού Πρόγραμμα Σπουδών είναι: -"+'\n-  '.join(neighbors) + "\n"
             elif node_type == 'career_op':
                 result = f"Για να εξελιχθείς, να ειδικευτείς ή και να ασχοληθείς ως {node}, τα κατάλληλα μαθήματα που θα σε προετοιμάσουν καλύτερα είναι: -"+'\n-  '.join([
                 f"{neighbor} ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'year']}), ({[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'semester']}) - {[n for n in list(G.neighbors(neighbor)) if G.nodes[n].get('type', 'unknown') == 'decision']}"
@@ -150,18 +150,23 @@ def make_documents_fromGraph(graph_nodes):
 
             graph_results.append(result)
 
-def rerank(query, documents, batch_size=16):
+def rerank(query, documents):
     pairs = [(query, doc) for doc in documents]
-    ranked_indexes = []
-    inputs = tokenizer(pairs, padding=True, truncation=True, return_tensors="pt").to(device)
 
-    torch.cuda.empty_cache()
+    try:
+        ranked_indexes = []
+        inputs = tokenizer(pairs, padding=True, truncation=True, return_tensors="pt").to(device)
 
-    with torch.no_grad():
-        scores = reranker_model(**inputs).logits.view(-1).cpu().tolist()  #Get scores
+        torch.cuda.empty_cache()
 
-    #Sort documents by score and store indexes
-    ranked_indexes = [i for i, _ in sorted(enumerate(scores), key=lambda x: x[1], reverse=True)]
+        with torch.no_grad():
+            scores = reranker_model(**inputs).logits.view(-1).cpu().tolist()  #Get scores
+
+        #Sort documents by score and store indexes
+        ranked_indexes = [i for i, _ in sorted(enumerate(scores), key=lambda x: x[1], reverse=True)]
+    except Exception as e:
+        print(f"Error during reranking: {e}")
+        return [0,1,2,3,4]
     return ranked_indexes
 
 
