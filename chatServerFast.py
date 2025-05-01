@@ -1,9 +1,8 @@
-import threading
 import time
 import os
 import json
 import sys
-from fastapi import FastAPI, Request, BackgroundTasks, Depends, Query
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
@@ -14,16 +13,12 @@ from langchain.document_loaders import DirectoryLoader, TextLoader
 from langchain.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
-from llama_cpp import Llama
 from langchain.prompts import PromptTemplate
 import torch
 import gc
-
-import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 import networkx as nx
-import unidecode  
 import re
 
 class MarkdownTitleTextSplitter(TextSplitter):
@@ -336,46 +331,88 @@ def format_history(chat_history):
 
 
 from typing import List, Dict
+import asyncio
+queue = asyncio.Queue()
+processing_sessions = set()
+
+
 class ChatRequest(BaseModel):
     message: str
     history: List[Dict[str, str]]
+    session_id: str
+
 
 @app.post("/chat")
 async def run_chat(request: ChatRequest):
-    try:
-        start=time.perf_counter()
-        message , history = request.message, request.history
-        history = format_history(history) #make history more understandable
-        newQuestion = rephrase_query(message, history) #used to create new query according to the history of the conversation
-        questions = split_query(newQuestion) #used to split the question into two or more questions
-        questions = questions[:5] #used to limit the number of questions to 5
-        print(questions)
+    message = request.message
+    history = request.history
+    session_id = request.session_id
+    print(f"Queue content: {queue._queue}")
+    print(f"Processing sessions: {processing_sessions}")
 
-        if len(questions) == 1:
-            documents = reRankingRetriever_local(newQuestion, retriever) ##used to retrieve the documents from the vector store
-            generated_answer = query_model(newQuestion, documents, chatModel, history)
-            end = time.perf_counter()
+    # Return position in queue if already in progress or queued
+    if session_id in processing_sessions:
+        position = list(queue._queue).index(session_id) + 1 if session_id in queue._queue else None
+        return {"message": f"⏳ Παρακαλώ περιμένετε... Είστε στη θέση {position} της ουράς."}
+    if session_id not in queue._queue:
+        await queue.put(session_id)
+    position = list(queue._queue).index(session_id)
+
+    # If not first in queue, return queue position
+    if position > 0:
+        if position == 1:
+            return {"message": f"⏳ Παρακαλώ περιμένετε... Είστε στη θέση {position} της ουράς και έχετε προτεραιότητα!"}
+        else:
+            return {"message": f"⏳ Παρακαλώ περιμένετε... Είστε στη θέση {position} της ουράς."}
+        
+
+    processing_sessions.add(session_id)
+
+    try:
+        def process_request():
+            start = time.perf_counter()
+
+            formatted_history = format_history(history)
+            new_question = rephrase_query(message, formatted_history)
+            questions = split_query(new_question)[:5]
+
+            if len(questions) == 1:
+                documents = reRankingRetriever_local(new_question, retriever)
+                answer = query_model(new_question, documents, chatModel, formatted_history)
+            else:
+                answers_list = []
+                for question in questions:
+                    documents = reRankingRetriever_local(question, retriever)
+                    partial_answer = query_model(question, documents, chatModel, formatted_history, show_prompt=False)
+                    answers_list.append(partial_answer)
+                context = "\n".join(answers_list)
+                answer = query_model(
+                    question=new_question,
+                    chatModel=chatModel,
+                    docs=context,
+                    history=formatted_history,
+                    show_prompt=True,
+                    docs_need_format=False
+                )
+
             torch.cuda.empty_cache()
             gc.collect()
+            end = time.perf_counter()
             print(f"Time to run query: {end - start}")
-            return {"message": generated_answer}
-            
-        answers_list = []
-        for question in questions:
-            documents = reRankingRetriever_local(question, retriever) ##used to retrieve the documents from the vector store
-            temp_generated_answer = query_model(question, documents, chatModel, history, False) ##used to generate the answer from the chat model 
-            answers_list.append(temp_generated_answer)  
-        context = "\n".join(answers_list) #used to create the context of the question
-        generated_answer = query_model(question=newQuestion,chatModel=chatModel,docs=context,history=history, show_prompt = True, docs_need_format=False) #used to join the answers into one answer
-       
-        torch.cuda.empty_cache()
-        gc.collect()
-        end = time.perf_counter()
-        print(f"Time to run query: {end - start}")
+            return answer
+
+        # Run the blocking task in a background thread
+        generated_answer = await asyncio.to_thread(process_request)
+        processing_sessions.remove(session_id)
+        queue._queue.remove(session_id)
         return {"message": generated_answer}
+
     except Exception as e:
+        processing_sessions.remove(session_id)
+        queue._queue.remove(session_id)
         print(f"ERROR in /chat: {str(e)}", file=sys.stderr)
         return {"error": "Internal server error"}
+
     
 
 @app.get("/sessionEnd")
