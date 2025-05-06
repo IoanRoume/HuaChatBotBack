@@ -309,20 +309,21 @@ def get_next_id():
     return new_id
 
 def format_history(chat_history):
-
     if len(chat_history) < 2:
-        return ""  #Αν δεν υπάρχει προηγούμενη απάντηση, δεν προσθέτουμε ιστορικό
+        return ""
 
     last_user_question = None
     last_bot_answer = None
 
-    #Διατρέχουμε το ιστορικό από το τέλος προς την αρχή
     for entry in reversed(chat_history):
         if entry["role"] == "bot" and last_bot_answer is None:
             last_bot_answer = entry["content"]
         elif entry["role"] == "user" and last_user_question is None:
             last_user_question = entry["content"]
-            break  #Μόλις βρούμε και τα δύο, σταματάμε
+        
+        # Only break when both are found
+        if last_user_question and last_bot_answer:
+            break
 
     if last_user_question and last_bot_answer:
         return f"- Προηγούμενη Ερώτηση από χρήστη: {last_user_question}\n\n- Προηγούμενη Απάντησή σου: {last_bot_answer}"
@@ -344,9 +345,8 @@ class ChatRequest(BaseModel):
 
 @app.post("/chat")
 async def run_chat(request: ChatRequest):
-    message = request.message
-    history = request.history
-    session_id = request.session_id
+    message, history, session_id = request.message, request.history, request.session_id
+    print(f"History: {history}")
     print(f"Queue content: {queue._queue}")
     print(f"Processing sessions: {processing_sessions}")
 
@@ -373,6 +373,9 @@ async def run_chat(request: ChatRequest):
             start = time.perf_counter()
 
             formatted_history = format_history(history)
+            if formatted_history == "":
+                formatted_history = history
+            print(f"Formatted History: {formatted_history}")
             new_question = rephrase_query(message, formatted_history)
             questions = split_query(new_question)[:5]
 
