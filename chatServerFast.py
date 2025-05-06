@@ -2,7 +2,7 @@ import time
 import os
 import json
 import sys
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
@@ -312,30 +312,52 @@ def format_history(chat_history):
     if len(chat_history) < 2:
         return ""
 
-    last_user_question = None
-    last_bot_answer = None
+    # Traverse from end to start, looking for the last valid user→bot pair
+    for i in range(len(chat_history) - 2, -1, -1):
+        if (chat_history[i]["role"] == "user" and
+            chat_history[i + 1]["role"] == "bot"):
+            
+            last_user_question = chat_history[i]["content"]
+            last_bot_answer = chat_history[i + 1]["content"]
 
-    for entry in reversed(chat_history):
-        if entry["role"] == "bot" and last_bot_answer is None:
-            last_bot_answer = entry["content"]
-        elif entry["role"] == "user" and last_user_question is None:
-            last_user_question = entry["content"]
-        
-        # Only break when both are found
-        if last_user_question and last_bot_answer:
-            break
-
-    if last_user_question and last_bot_answer:
-        return f"- Προηγούμενη Ερώτηση από χρήστη: {last_user_question}\n\n- Προηγούμενη Απάντησή σου: {last_bot_answer}"
+            return (f"- Προηγούμενη Ερώτηση από χρήστη: {last_user_question}\n\n"
+                    f"- Προηγούμενη Απάντησή σου: {last_bot_answer}")
 
     return ""
+
 
 
 from typing import List, Dict
 import asyncio
 queue = asyncio.Queue()
 processing_sessions = set()
+session_last_seen = {}
 
+INACTIVITY_TIMEOUT = 5
+async def remove_stale_sessions():
+    while True:
+        now = time.time()
+        stale_sessions = [
+            sid for sid, last_seen in session_last_seen.items()
+            if now - last_seen > INACTIVITY_TIMEOUT and sid not in processing_sessions
+        ]
+
+        for sid in stale_sessions:
+            # Remove from queue if exists
+            try:
+                queue._queue.remove(sid)
+                print(f"Session {sid} removed from queue due to inactivity.")
+            except ValueError:
+                pass
+            processing_sessions.discard(sid)
+            session_last_seen.pop(sid, None)
+
+        await asyncio.sleep(5)  #Run every 5 seconds
+
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(remove_stale_sessions())
 
 class ChatRequest(BaseModel):
     message: str
@@ -346,7 +368,7 @@ class ChatRequest(BaseModel):
 @app.post("/chat")
 async def run_chat(request: ChatRequest):
     message, history, session_id = request.message, request.history, request.session_id
-    print(f"History: {history}")
+    session_last_seen[session_id] = time.time()
     print(f"Queue content: {queue._queue}")
     print(f"Processing sessions: {processing_sessions}")
 
@@ -375,7 +397,6 @@ async def run_chat(request: ChatRequest):
             formatted_history = format_history(history)
             if formatted_history == "":
                 formatted_history = history
-            print(f"Formatted History: {formatted_history}")
             new_question = rephrase_query(message, formatted_history)
             questions = split_query(new_question)[:5]
 
