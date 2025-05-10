@@ -101,7 +101,7 @@ class MarkdownTitleTextSplitterMainHua(TextSplitter):
                 current_section = [line]  # Start a new section
                 skipLine = True
             #Check if the line is a separator (a line with only '=' characters)
-            elif line.startswith("==") or line.startswith("--"):
+            elif line.startswith("=="):
 
                 if current_section:
                     sections.append("\n".join(current_section))
