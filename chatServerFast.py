@@ -69,6 +69,55 @@ class MarkdownTitleTextSplitter(TextSplitter):
             sections.append("\n".join(current_section))
 
         return sections
+    
+class MarkdownTitleTextSplitterMainHua(TextSplitter):
+    def split_text(self, text: str):
+        sections = []
+        current_section = []
+        previous_line = ""
+        skipLine = False
+
+        for line in text.splitlines():
+            #Check if the line starts with a Markdown header (e.g., #, ##, ###)
+            if line == "":
+              continue
+            elif line.startswith("#"):
+                current_section.append(previous_line)
+                if current_section:  # Save the current section if it exists
+                    sections.append("\n".join(current_section))
+                current_section = [line]  # Start a new section
+                skipLine = True
+            #Check if the line starts with '**' (indicating bold text or a special marker)
+            elif line.startswith("**"):
+                current_section.append(previous_line)
+                if current_section:  # Save the current section if it exists
+                    sections.append("\n".join(current_section))
+                current_section = [line]  # Start a new section
+                skipLine = True
+            elif line.startswith("|"):
+                current_section.append(previous_line)
+                if current_section:  # Save the current section if it exists
+                    sections.append("\n".join(current_section))
+                current_section = [line]  # Start a new section
+                skipLine = True
+            #Check if the line is a separator (a line with only '=' characters)
+            elif line.startswith("==") or line.startswith("--"):
+
+                if current_section:
+                    sections.append("\n".join(current_section))
+                current_section = [previous_line]
+            else:
+              if skipLine == False:
+                current_section.append(previous_line)
+              elif skipLine:
+                skipLine = False
+
+            previous_line = line
+        #Add the final section if there's remaining content
+        if current_section:
+            sections.append("\n".join(current_section))
+
+        return sections
 
 def make_documents_fromGraph(graph_nodes):
         global graph_results
@@ -493,14 +542,23 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     directory_path = '/home/it2021087/chatBot/Hua/scraped_pages_el'
+    directory_path_main_hua = '/home/it2021087/chatBot/Hua/scraped_pages_el_main_Hua'
 
     loader = DirectoryLoader(directory_path, glob="*.md", loader_cls=TextLoader)
     documents = loader.load()
+
+    loader_main_hua = DirectoryLoader(directory_path_main_hua, glob="*.md", loader_cls=TextLoader)
+    documents_main_hua = loader_main_hua.load()
     print(f"Loaded {len(documents)} documents")
 
     #Apply the custom Markdown splitter
     markdown_splitter = MarkdownTitleTextSplitter()
+    markdown_splitter_main_hua = MarkdownTitleTextSplitterMainHua()
     texts = markdown_splitter.split_documents(documents)
+    texts_main_hua = markdown_splitter_main_hua.split_documents(documents_main_hua)
+
+    #Combine the two lists of documents
+    texts.extend(texts_main_hua)
 
     #Persist embeddings with Chroma
     persist_directory = 'db_el'
